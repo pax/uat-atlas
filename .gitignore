@@ -1,0 +1,9 @@
+*/_obsolete/*
+*_obsolete*
+.vscode/*
+results/
+data/*
+.playwright-mcp/*
+.playwright-mcp
+.env
+*/.env

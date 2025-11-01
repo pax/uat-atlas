@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Romanian Cities Statistics Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root {
+  /* Primitive Color Tokens */
+  --color-white: rgba(255, 255, 255, 1);
+  --color-black: rgba(0, 0, 0, 1);
+  --color-cream-50: rgba(252, 252, 249, 1);
+  --color-cream-100: rgba(255, 255, 253, 1);
+  --color-gray-200: rgba(245, 245, 245, 1);
+  --color-gray-300: rgba(167, 169, 169, 1);
+  --color-gray-400: rgba(119, 124, 124, 1);
+  --color-slate-500: rgba(98, 108, 113, 1);
+  --color-brown-600: rgba(94, 82, 64, 1);
+  --color-charcoal-700: rgba(31, 33, 33, 1);
+  --color-charcoal-800: rgba(38, 40, 40, 1);
+  --color-slate-900: rgba(19, 52, 59, 1);
+  --color-teal-300: rgba(50, 184, 198, 1);
+  --color-teal-400: rgba(45, 166, 178, 1);
+  --color-teal-500: rgba(33, 128, 141, 1);
+  --color-teal-600: rgba(29, 116, 128, 1);
+  --color-teal-700: rgba(26, 104, 115, 1);
+  --color-teal-800: rgba(41, 150, 161, 1);
+  --color-red-400: rgba(255, 84, 89, 1);
+  --color-red-500: rgba(192, 21, 47, 1);
+  --color-orange-400: rgba(230, 129, 97, 1);
+  --color-orange-500: rgba(168, 75, 47, 1);
+
+  --color-brown-600-rgb: 94, 82, 64;
+  --color-teal-500-rgb: 33, 128, 141;
+  --color-slate-900-rgb: 19, 52, 59;
+  --color-slate-500-rgb: 98, 108, 113;
+  --color-red-500-rgb: 192, 21, 47;
+  --color-red-400-rgb: 255, 84, 89;
+  --color-orange-500-rgb: 168, 75, 47;
+  --color-orange-400-rgb: 230, 129, 97;
+
+  --color-bg-1: rgba(59, 130, 246, 0.08);
+  --color-bg-2: rgba(245, 158, 11, 0.08);
+  --color-bg-3: rgba(34, 197, 94, 0.08);
+  --color-bg-4: rgba(239, 68, 68, 0.08);
+  --color-bg-5: rgba(147, 51, 234, 0.08);
+  --color-bg-6: rgba(249, 115, 22, 0.08);
+  --color-bg-7: rgba(236, 72, 153, 0.08);
+  --color-bg-8: rgba(6, 182, 212, 0.08);
+
+  --color-background: var(--color-cream-50);
+  --color-surface: var(--color-cream-100);
+  --color-text: var(--color-slate-900);
+  --color-text-secondary: var(--color-slate-500);
+  --color-primary: var(--color-teal-500);
+  --color-primary-hover: var(--color-teal-600);
+  --color-primary-active: var(--color-teal-700);
+  --color-secondary: rgba(var(--color-brown-600-rgb), 0.12);
+  --color-secondary-hover: rgba(var(--color-brown-600-rgb), 0.2);
+  --color-secondary-active: rgba(var(--color-brown-600-rgb), 0.25);
+  --color-border: rgba(var(--color-brown-600-rgb), 0.2);
+  --color-btn-primary-text: var(--color-cream-50);
+  --color-card-border: rgba(var(--color-brown-600-rgb), 0.12);
+  --color-card-border-inner: rgba(var(--color-brown-600-rgb), 0.12);
+  --color-error: var(--color-red-500);
+  --color-success: var(--color-teal-500);
+  --color-warning: var(--color-orange-500);
+  --color-info: var(--color-slate-500);
+  --color-focus-ring: rgba(var(--color-teal-500-rgb), 0.4);
+  --color-select-caret: rgba(var(--color-slate-900-rgb), 0.8);
+
+  --focus-ring: 0 0 0 3px var(--color-focus-ring);
+  --focus-outline: 2px solid var(--color-primary);
+
+  --font-family-base: "FKGroteskNeue", "Geist", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-size-xs: 11px;
+  --font-size-sm: 12px;
+  --font-size-base: 14px;
+  --font-size-md: 14px;
+  --font-size-lg: 16px;
+  --font-size-xl: 18px;
+  --font-size-2xl: 20px;
+  --font-size-3xl: 24px;
+  --font-size-4xl: 30px;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 550;
+  --font-weight-bold: 600;
+  --line-height-tight: 1.2;
+  --line-height-normal: 1.5;
+  --letter-spacing-tight: -0.01em;
+
+  --space-4: 4px;
+  --space-8: 8px;
+  --space-12: 12px;
+  --space-16: 16px;
+  --space-20: 20px;
+  --space-24: 24px;
+  --space-32: 32px;
+  --space-48: 48px;
+
+  --radius-sm: 6px;
+  --radius-base: 8px;
+  --radius-md: 10px;
+  --radius-lg: 12px;
+  --radius-full: 9999px;
+
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.04), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
+
+  --duration-fast: 150ms;
+  --duration-normal: 250ms;
+  --ease-standard: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-gray-400-rgb: 119, 124, 124;
+    --color-teal-300-rgb: 50, 184, 198;
+    --color-gray-300-rgb: 167, 169, 169;
+    --color-gray-200-rgb: 245, 245, 245;
+
+    --color-bg-1: rgba(29, 78, 216, 0.15);
+    --color-bg-2: rgba(180, 83, 9, 0.15);
+    --color-bg-3: rgba(21, 128, 61, 0.15);
+    --color-bg-4: rgba(185, 28, 28, 0.15);
+    --color-bg-5: rgba(107, 33, 168, 0.15);
+    --color-bg-6: rgba(194, 65, 12, 0.15);
+    --color-bg-7: rgba(190, 24, 93, 0.15);
+    --color-bg-8: rgba(8, 145, 178, 0.15);
+
+    --color-background: var(--color-charcoal-700);
+    --color-surface: var(--color-charcoal-800);
+    --color-text: var(--color-gray-200);
+    --color-text-secondary: rgba(var(--color-gray-300-rgb), 0.7);
+    --color-primary: var(--color-teal-300);
+    --color-primary-hover: var(--color-teal-400);
+    --color-primary-active: var(--color-teal-800);
+    --color-secondary: rgba(var(--color-gray-400-rgb), 0.15);
+    --color-secondary-hover: rgba(var(--color-gray-400-rgb), 0.25);
+    --color-secondary-active: rgba(var(--color-gray-400-rgb), 0.3);
+    --color-border: rgba(var(--color-gray-400-rgb), 0.3);
+    --color-error: var(--color-red-400);
+    --color-success: var(--color-teal-300);
+    --color-warning: var(--color-orange-400);
+    --color-info: var(--color-gray-300);
+    --color-focus-ring: rgba(var(--color-teal-300-rgb), 0.4);
+    --color-btn-primary-text: var(--color-slate-900);
+    --color-card-border: rgba(var(--color-gray-400-rgb), 0.2);
+    --color-card-border-inner: rgba(var(--color-gray-400-rgb), 0.15);
+  }
+}
+
+@font-face {
+  font-family: 'FKGroteskNeue';
+  src: url('https://r2cdn.perplexity.ai/fonts/FKGroteskNeue.woff2') format('woff2');
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-family-base);
+  background-color: var(--color-background);
+  color: var(--color-text);
+  line-height: var(--line-height-normal);
+  -webkit-font-smoothing: antialiased;
+}
+
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: var(--space-24);
+}
+
+.header {
+  background-color: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  padding: var(--space-24) 0;
+  margin-bottom: var(--space-32);
+}
+
+.header-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 var(--space-24);
+}
+
+.header h1 {
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text);
+  margin-bottom: var(--space-8);
+}
+
+.header-meta {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+.nav-tabs {
+  display: flex;
+  gap: var(--space-8);
+  margin-bottom: var(--space-32);
+  border-bottom: 1px solid var(--color-border);
+  flex-wrap: wrap;
+}
+
+.nav-tab {
+  padding: var(--space-12) var(--space-20);
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all var(--duration-fast) var(--ease-standard);
+}
+
+.nav-tab:hover {
+  color: var(--color-text);
+  background-color: var(--color-secondary);
+}
+
+.nav-tab.active {
+  color: var(--color-primary);
+  border-bottom-color: var(--color-primary);
+}
+
+.view {
+  display: none;
+}
+
+.view.active {
+  display: block;
+}
+
+.card {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-card-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-24);
+  margin-bottom: var(--space-24);
+  box-shadow: var(--shadow-sm);
+}
+
+.card h2 {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-semibold);
+  margin-bottom: var(--space-16);
+  color: var(--color-text);
+}
+
+.filter-controls {
+  display: flex;
+  gap: var(--space-16);
+  margin-bottom: var(--space-24);
+  flex-wrap: wrap;
+}
+
+.filter-controls input,
+.filter-controls select {
+  padding: var(--space-8) var(--space-12);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-base);
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  font-size: var(--font-size-base);
+  min-width: 200px;
+}
+
+.filter-controls select {
+  cursor: pointer;
+}
+
+.table-container {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-size-sm);
+}
+
+thead th {
+  background-color: var(--color-bg-1);
+  padding: var(--space-12);
+  text-align: left;
+  font-weight: var(--font-weight-semibold);
+  border-bottom: 2px solid var(--color-border);
+  cursor: pointer;
+  user-select: none;
+  position: sticky;
+  top: 0;
+  white-space: nowrap;
+}
+
+thead th:hover {
+  background-color: var(--color-bg-2);
+}
+
+thead th.sortable::after {
+  content: ' ↕';
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-xs);
+}
+
+thead th.sorted-asc::after {
+  content: ' ↑';
+  color: var(--color-primary);
+}
+
+thead th.sorted-desc::after {
+  content: ' ↓';
+  color: var(--color-primary);
+}
+
+tbody tr {
+  border-bottom: 1px solid var(--color-card-border-inner);
+}
+
+tbody tr:hover {
+  background-color: var(--color-bg-1);
+}
+
+tbody td {
+  padding: var(--space-12);
+}
+
+tbody td:first-child {
+  font-weight: var(--font-weight-medium);
+}
+
+tbody td.total-cell {
+  font-weight: var(--font-weight-bold);
+  background-color: var(--color-bg-3);
+}
+
+.chart-container {
+  position: relative;
+  height: 400px;
+  margin-top: var(--space-24);
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--space-16);
+  margin-bottom: var(--space-24);
+}
+
+.stat-card {
+  background-color: var(--color-bg-1);
+  padding: var(--space-16);
+  border-radius: var(--radius-base);
+  border: 1px solid var(--color-card-border);
+}
+
+.stat-label {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-4);
+}
+
+.stat-value {
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary);
+}
+
+.category-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: var(--space-12);
+  margin-bottom: var(--space-24);
+}
+
+.category-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-12);
+  background-color: var(--color-bg-2);
+  border-radius: var(--radius-base);
+  border: 1px solid var(--color-card-border);
+}
+
+.category-name {
+  font-size: var(--font-size-sm);
+  color: var(--color-text);
+  font-weight: var(--font-weight-medium);
+}
+
+.category-count {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary);
+}
+
+.btn {
+  padding: var(--space-8) var(--space-16);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-base);
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  font-size: var(--font-size-base);
+  cursor: pointer;
+  transition: all var(--duration-fast) var(--ease-standard);
+}
+
+.btn:hover {
+  background-color: var(--color-secondary);
+}
+
+.btn-primary {
+  background-color: var(--color-primary);
+  color: var(--color-btn-primary-text);
+  border-color: var(--color-primary);
+}
+
+.btn-primary:hover {
+  background-color: var(--color-primary-hover);
+}
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <div class="header-content">
+        <a href="gemini.html">gemini</a> / 
+<a href="perplexity.html"><b>perplexity</b></a> / 
+<a href="claude.html">claude</a>
+      <h1>Romanian Cities Statistics Dashboard</h1>
+      <div class="header-meta">Last Updated: November 2, 2025</div>
+    </div>
+  </div>
+
+  <div class="container">
+    <nav class="nav-tabs">
+      <button class="nav-tab active" data-view="comparison">Comparison Table</button>
+      <button class="nav-tab" data-view="category">Category Charts</button>
+      <button class="nav-tab" data-view="city">City Profile</button>
+    </nav>
+
+    <!-- Comparison Table View -->
+    <div id="comparison-view" class="view active">
+      <div class="card">
+        <h2>City Comparison Table</h2>
+        <div class="filter-controls">
+          <input type="text" id="search-input" placeholder="Search cities or categories...">
+        </div>
+        <div class="table-container">
+          <table id="comparison-table">
+            <thead>
+              <tr id="table-header"></tr>
+            </thead>
+            <tbody id="table-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Category Charts View -->
+    <div id="category-view" class="view">
+      <div class="card">
+        <h2>Category Comparison Charts</h2>
+        <div class="filter-controls">
+          <select id="category-select"></select>
+        </div>
+        <div class="chart-container">
+          <canvas id="category-chart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- City Profile View -->
+    <div id="city-view" class="view">
+      <div class="card">
+        <h2>City Profile</h2>
+        <div class="filter-controls">
+          <select id="city-select"></select>
+        </div>
+        <div id="city-stats"></div>
+        <div class="chart-container">
+          <canvas id="city-chart"></canvas>
+        </div>
+        <h3 style="margin-top: 32px; margin-bottom: 16px; font-size: 18px;">Detailed Breakdown</h3>
+        <div id="city-categories" class="category-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // --- DATA LOADING ---
+    let cityData = {};
+    let cities = [];
+    let categories = [];
+    const chartColors = ['#1FB8CD', '#FFC185', '#B4413C', '#ECEBD5', '#5D878F', '#DB4545', '#D2BA4C', '#964325', '#944454', '#13343B'];
+
+    let currentSort = { column: null, direction: 'asc' };
+    let categoryChart = null;
+    let cityChart = null;
+
+    function parseCSV(csv) {
+      const lines = csv.trim().split('\n');
+      if (lines.length === 0) return {};
+      const headers = lines[0].split(',').map(h => h.trim());
+      const data = {};
+      const cats = new Set();
+      for (let i = 1; i < lines.length; i++) {
+        const values = lines[i].split(',');
+        if (values.length !== headers.length) continue;
+        const record = {};
+        headers.forEach((header, idx) => {
+          record[header] = header === 'count' ? parseInt(values[idx].trim(), 10) : values[idx].trim();
+        });
+        const city = record.city;
+        const category = record.category;
+        const count = record.count;
+        if (!data[city]) data[city] = {};
+        data[city][category] = count;
+        cats.add(category);
+      }
+      return { data, cats: Array.from(cats).sort() };
+    }
+
+    function initializeDashboard() {
+      cities = Object.keys(cityData);
+      categories = categories.length ? categories : Object.keys(cityData[cities[0]]);
+      renderTable();
+      initCategorySelect();
+      initCitySelect();
+    }
+
+    // Navigation
+    document.querySelectorAll('.nav-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+        tab.classList.add('active');
+        document.getElementById(`${tab.dataset.view}-view`).classList.add('active');
+      });
+    });
+
+    // Comparison Table
+    function renderTable(filterText = '') {
+      const header = document.getElementById('table-header');
+      const body = document.getElementById('table-body');
+
+      // Create header
+      header.innerHTML = '<th class="sortable" data-column="city">City</th>';
+      categories.forEach(cat => {
+        header.innerHTML += `<th class="sortable" data-column="${cat}">${cat}</th>`;
+      });
+      header.innerHTML += '<th class="sortable" data-column="total">Total</th>';
+
+      // Add sort listeners
+      header.querySelectorAll('.sortable').forEach(th => {
+        th.addEventListener('click', () => {
+          sortTable(th.dataset.column);
+        });
+      });
+
+      // Create body
+      let tableData = cities.map(city => {
+        const total = categories.reduce((sum, cat) => sum + (cityData[city][cat] || 0), 0);
+        return { city, total, ...cityData[city] };
+      });
+
+      // Filter
+      if (filterText) {
+        tableData = tableData.filter(row => 
+          row.city.toLowerCase().includes(filterText.toLowerCase()) ||
+          categories.some(cat => cat.toLowerCase().includes(filterText.toLowerCase()))
+        );
+      }
+
+      // Sort
+      if (currentSort.column) {
+        tableData.sort((a, b) => {
+          let valA = currentSort.column === 'city' ? a.city : a[currentSort.column];
+          let valB = currentSort.column === 'city' ? b.city : b[currentSort.column];
+
+          if (typeof valA === 'string') {
+            return currentSort.direction === 'asc' 
+              ? valA.localeCompare(valB)
+              : valB.localeCompare(valA);
+          } else {
+            return currentSort.direction === 'asc'
+              ? valA - valB
+              : valB - valA;
+          }
+        });
+      }
+
+      body.innerHTML = '';
+      tableData.forEach(row => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${row.city}</td>`;
+        categories.forEach(cat => {
+          tr.innerHTML += `<td>${row[cat] !== undefined ? row[cat] : ''}</td>`;
+        });
+        tr.innerHTML += `<td class="total-cell">${row.total}</td>`;
+        body.appendChild(tr);
+      });
+
+      // Update sort indicators
+      header.querySelectorAll('th').forEach(th => {
+        th.classList.remove('sorted-asc', 'sorted-desc');
+        if (th.dataset.column === currentSort.column) {
+          th.classList.add(`sorted-${currentSort.direction}`);
+        }
+      });
+    }
+
+    function sortTable(column) {
+      if (currentSort.column === column) {
+        currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
+      } else {
+        currentSort.column = column;
+        currentSort.direction = 'asc';
+      }
+      renderTable(document.getElementById('search-input').value);
+    }
+
+    // Category Charts
+    function initCategorySelect() {
+      const select = document.getElementById('category-select');
+      select.innerHTML = '';
+      categories.forEach(cat => {
+        const option = document.createElement('option');
+        option.value = cat;
+        option.textContent = cat;
+        select.appendChild(option);
+      });
+
+      select.addEventListener('change', () => {
+        renderCategoryChart(select.value);
+      });
+
+      renderCategoryChart(categories[0]);
+    }
+
+    function renderCategoryChart(category) {
+      const ctx = document.getElementById('category-chart');
+
+      if (categoryChart) {
+        categoryChart.destroy();
+      }
+
+      const data = cities.map(city => cityData[city][category] || 0);
+
+      categoryChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: cities,
+          datasets: [{
+            label: category,
+            data: data,
+            backgroundColor: chartColors.slice(0, cities.length),
+            borderColor: chartColors.slice(0, cities.length),
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: false
+            },
+            title: {
+              display: true,
+              text: `${category} Count by City`,
+              font: {
+                size: 16,
+                weight: 'bold'
+              }
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {
+                precision: 0
+              }
+            }
+          }
+        }
+      });
+    }
+
+    // City Profile
+    function initCitySelect() {
+      const select = document.getElementById('city-select');
+      select.innerHTML = '';
+      cities.forEach(city => {
+        const option = document.createElement('option');
+        option.value = city;
+        option.textContent = city;
+        select.appendChild(option);
+      });
+
+      select.addEventListener('change', () => {
+        renderCityProfile(select.value);
+      });
+
+      renderCityProfile(cities[0]);
+    }
+
+    function renderCityProfile(city) {
+      const data = cityData[city];
+      const total = categories.reduce((sum, cat) => sum + (data[cat] || 0), 0);
+      const average = (total / categories.length).toFixed(1);
+      const max = Math.max(...categories.map(cat => data[cat] || 0));
+      const maxCategory = categories.find(cat => (data[cat] || 0) === max);
+
+      // Stats
+      const statsHtml = `
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-label">Total Facilities</div>
+            <div class="stat-value">${total.toLocaleString()}</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Average per Category</div>
+            <div class="stat-value">${average}</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Highest Category</div>
+            <div class="stat-value" style="font-size: 16px;">${maxCategory}</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Count</div>
+            <div class="stat-value">${max}</div>
+          </div>
+        </div>
+      `;
+      document.getElementById('city-stats').innerHTML = statsHtml;
+
+      // Categories list
+      const categoriesHtml = categories.map(cat => `
+        <div class="category-item">
+          <span class="category-name">${cat}</span>
+          <span class="category-count">${data[cat] !== undefined ? data[cat] : ''}</span>
+        </div>
+      `).join('');
+      document.getElementById('city-categories').innerHTML = categoriesHtml;
+
+      // Chart
+      const ctx = document.getElementById('city-chart');
+
+      if (cityChart) {
+        cityChart.destroy();
+      }
+
+      cityChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+          labels: categories,
+          datasets: [{
+            data: categories.map(cat => data[cat] || 0),
+            backgroundColor: chartColors,
+            borderWidth: 2,
+            borderColor: '#fff'
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'right',
+              labels: {
+                padding: 10,
+                font: {
+                  size: 12
+                }
+              }
+            },
+            title: {
+              display: true,
+              text: `${city} - Facility Distribution`,
+              font: {
+                size: 16,
+                weight: 'bold'
+              }
+            }
+          }
+        }
+      });
+    }
+
+    // Search filter
+    document.getElementById('search-input').addEventListener('input', (e) => {
+      renderTable(e.target.value);
+    });
+
+    // --- DATA FETCH & INIT ---
+    document.addEventListener('DOMContentLoaded', () => {
+      fetch('data/city-stats-2.csv')
+        .then(response => {
+          if (!response.ok) throw new Error('Failed to load city-stats-2.csv');
+          return response.text();
+        })
+        .then(csvText => {
+          const parsed = parseCSV(csvText);
+          cityData = parsed.data;
+          categories = parsed.cats;
+          initializeDashboard();
+        })
+        .catch(err => {
+          console.error('Error loading city-stats-2.csv:', err);
+        });
+    });
+  </script>
+</body>
+</html>
