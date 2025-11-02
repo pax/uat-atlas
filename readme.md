@@ -18,13 +18,15 @@ use data fetched with [pax/gis-places-osint](https://github.com/pax/gis-places-o
 create city profiles, maps 
 
 ## Roadmap
-- [ ] mpv ui
+- [x] mpv ui
 - [ ] split categories by parent categories / grouping
 - [ ] read data from db/api?
 - [ ] norm to population
 - [ ] icons for categories
 - [ ] how to calculate scores?
 - [ ] add INS data
+
+- figure out stack
 
 - [ ] multi lang
 - [ ] text to sql - hugginface trained model
