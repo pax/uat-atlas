@@ -118,7 +118,7 @@
 <body>
 
     <div class="container">
-            <a href="gemini.html">gemini</a> / 
+            <a href="../index.html">#</a> :  <a href="gemini.html">gemini</a> / 
 <a href="perplexity.html">perplexity</a> / 
 <a href="claude.html"><b>claude</b></a>
         <h1>Romanian City Statistics Comparison</h1>
@@ -229,7 +229,8 @@
             const cities = [...new Set(cityStats.map(s => s.city))];
             const cards = cities.map(city => {
                 const cityData = cityStats.filter(s => s.city === city);
-                const total = cityData.reduce((sum, s) => sum + parseFloat(s.count), 0);
+                // Safely parse counts -- treat missing/invalid as 0
+                const total = cityData.reduce((sum, s) => sum + (parseFloat(s.count) || 0), 0);
                 return `
                     <div class="metric-card">
                         <h3>${city}</h3>
@@ -254,9 +255,21 @@
                 ...cities.map(city => ({
                     data: city,
                     title: city,
-                    render: (data) => parseFloat(data).toLocaleString()
+                    // Guard against undefined/null/empty data and format safely
+                    render: (data) => {
+                        const num = (data === null || data === undefined || data === '') ? 0 : parseFloat(data);
+                        const safe = isNaN(num) ? 0 : num;
+                        return safe.toLocaleString();
+                    }
                 }))
             ];
+
+            // Build the table header dynamically so DataTables finds matching <th> elements
+            const thead = document.querySelector('#cityTable thead');
+            if (thead) {
+                const headerHtml = '<tr>' + columns.map(c => `<th>${c.title}</th>`).join('') + '</tr>';
+                thead.innerHTML = headerHtml;
+            }
             
             dataTable = $('#cityTable').DataTable({
                 data: tableData,

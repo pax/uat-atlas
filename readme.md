@@ -12,5 +12,15 @@ use data fetched with [gmaps-bookmarklet](../gmaps-bookmarklet/)
 create city profiles, maps 
 
 ## Roadmap
-- [ ] read data, build db
+- [ ] mpv ui
+- [ ] split categories by parent categories / grouping
+- [ ] read data from db/api?
 - [ ] norm to population
+
+- [ ] multi lang
+- [ ] text to sql - hugginface trained model
+
+see [reference/brainstorming/]
+
+## Notes
+<https://github.com/claudio-silva/claude-artifact-runner>
