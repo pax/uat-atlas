@@ -76,7 +76,7 @@ This page provides a deep dive into a single city. The layout should guide the u
 +--------------------------------------------------------------------------------------+
 |                                                                                      |
 |   <h1>Cluj-Napoca</h1>     [⭐ Add to Compare]                                       |
-|   <p>A vibrant hub of technology and culture.</p>                                     |
+|   <p>A vibrant hub of technology and culture.</p>                                    |
 |                                                                                      |
 |   +---------------------------+  +-------------------------------------------------+ |
 |   |                           |  |  Overall Score                                  | |
@@ -96,14 +96,14 @@ This page provides a deep dive into a single city. The layout should guide the u
 |   |                                                                              |   |
 |   |  ▼ CULTURE & ENTERTAINMENT                                                   |   |
 |   |                                                                              |   |
-|   |    Bars & Pubs:    152 venues  (Ranked #2)                                    |   |
-|   |    Museums:        12 venues   (Ranked #3)                                    |   |
-|   |    Theaters:       8 venues    (Ranked #2)                                    |   |
+|   |    Bars & Pubs:    152 venues  (Ranked #2)                                   |   |
+|   |    Museums:        12 venues   (Ranked #3)                                   |   |
+|   |    Theaters:       8 venues    (Ranked #2)                                   |   |
 |   |                                                                              |   |
 |   | ▼ HEALTH & WELLNESS                                                          |   |
 |   |                                                                              |   |
-|   |    Hospitals:      10 venues   (Per 100k people: 2.1)                         |   |
-|   |    Pharmacies:     85 venues   (Per 100k people: 18.3)                        |   |
+|   |    Hospitals:      10 venues   (Per 100k people: 2.1)                        |   |
+|   |    Pharmacies:     85 venues   (Per 100k people: 18.3)                       |   |
 |   |                                                                              |   |
 |   +------------------------------------------------------------------------------+   |
 +--------------------------------------------------------------------------------------+
