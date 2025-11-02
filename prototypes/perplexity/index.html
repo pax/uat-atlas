@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CityProfiler.ro - Compare Romanian Cities</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <h1>CityProfiler.ro</h1>
+            </div>
+            <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <div class="nav-menu" id="navMenu">
+                <a href="#" class="nav-link" data-view="landing">Home</a>
+                <a href="#" class="nav-link" data-view="about">About</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main id="mainContent">
+        <!-- Landing Page View -->
+        <div id="landingView" class="view active">
+            <div class="hero">
+                <h1>Find Your Perfect City in Romania</h1>
+                <p>Compare Romanian cities based on venues, amenities, and lifestyle factors</p>
+            </div>
+
+            <div class="content-wrapper">
+                <aside class="sidebar">
+                    <div class="card">
+                        <h3>Preset Criteria</h3>
+                        <div class="preset-buttons">
+                            <button class="btn btn--secondary btn--sm" data-preset="overall">Overall</button>
+                            <button class="btn btn--secondary btn--sm" data-preset="kids_friendly">Kids Friendly</button>
+                            <button class="btn btn--secondary btn--sm" data-preset="nightlife">Nightlife</button>
+                            <button class="btn btn--secondary btn--sm" data-preset="retirement">Retirement</button>
+                            <button class="btn btn--secondary btn--sm" data-preset="culture">Culture &amp; Arts</button>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3>Filters</h3>
+                        <div class="form-group">
+                            <label class="form-label">Sort By</label>
+                            <select class="form-control" id="sortBy">
+                                <option value="name">Name (A-Z)</option>
+                                <option value="pop">Population (High-Low)</option>
+                                <option value="area">Area (High-Low)</option>
+                                <option value="score">Weighted Score</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Show Cities</label>
+                            <input type="number" class="form-control" id="cityLimit" value="12" min="1" max="12">
+                        </div>
+                        <button class="btn btn--primary btn--sm" id="createCriteriaBtn">Custom Criteria</button>
+                    </div>
+                </aside>
+
+                <div class="main-content">
+                    <div class="tabs">
+                        <button class="tab active" data-tab="list">List View</button>
+                        <button class="tab" data-tab="map">Map View</button>
+                    </div>
+
+                    <div class="tab-content">
+                        <!-- List View -->
+                        <div id="listView" class="tab-panel active">
+                            <div class="search-box">
+                                <input type="text" class="form-control" id="citySearch" placeholder="Search cities...">
+                            </div>
+                            <div class="city-grid" id="cityGrid"></div>
+                        </div>
+
+                        <!-- Map View -->
+                        <div id="mapView" class="tab-panel">
+                            <div class="map-placeholder">
+                                <p>Interactive map view showing Romanian cities</p>
+                                <div class="map-cities" id="mapCities"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- City Profile View -->
+        <div id="profileView" class="view">
+            <div class="profile-header">
+                <button class="btn btn--secondary" id="backToLanding">&larr; Back</button>
+                <div class="profile-actions">
+                    <button class="btn btn--primary" id="addToCompareProfile">Add to Compare</button>
+                </div>
+            </div>
+            <div class="profile-content" id="profileContent"></div>
+        </div>
+
+        <!-- Comparison View -->
+        <div id="comparisonView" class="view">
+            <div class="comparison-header">
+                <button class="btn btn--secondary" id="backToLandingFromComparison">&larr; Back</button>
+                <h2>City Comparison</h2>
+                <button class="btn btn--secondary" id="clearComparison">Clear All</button>
+            </div>
+            <div class="comparison-content">
+                <div class="comparison-table-wrapper" id="comparisonTable"></div>
+                
+                <div class="card weight-settings">
+                    <h3>Weighted Score Settings</h3>
+                    <div class="preset-profiles">
+                        <label class="form-label">Load Profile:</label>
+                        <div class="preset-buttons">
+                            <button class="btn btn--secondary btn--sm" data-preset="overall">Overall</button>
+                            <button class="btn btn--secondary btn--sm" data-preset="kids_friendly">Kids Friendly</button>
+                            <button class="btn btn--secondary btn--sm" data-preset="nightlife">Nightlife</button>
+                            <button class="btn btn--secondary btn--sm" data-preset="retirement">Retirement</button>
+                            <button class="btn btn--secondary btn--sm" data-preset="culture">Culture</button>
+                        </div>
+                    </div>
+                    <div id="weightSliders" class="weight-sliders"></div>
+                    <div class="weighted-results" id="weightedResults"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- About View -->
+        <div id="aboutView" class="view">
+            <div class="container">
+                <h2>About CityProfiler.ro</h2>
+                <div class="card">
+                    <p>CityProfiler.ro helps you compare Romanian cities based on various amenities and lifestyle factors. Our data includes venue statistics across multiple categories to help you make informed decisions about where to live, work, or visit.</p>
+                    <h3>How to Use</h3>
+                    <ul>
+                        <li>Browse cities in List or Map view</li>
+                        <li>Click on any city to see detailed statistics</li>
+                        <li>Select up to 3 cities to compare side-by-side</li>
+                        <li>Adjust category weights to calculate custom scores</li>
+                        <li>Use preset profiles or create your own criteria</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Floating Action Button -->
+    <button class="fab" id="compareFab" style="display: none;">
+        <span id="fabText">Compare Cities (0/3)</span>
+    </button>
+
+    <!-- Criteria Builder Modal -->
+    <div class="modal" id="criteriaModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Create Custom Criteria</h2>
+                <button class="modal-close" id="closeModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Profile Name</label>
+                    <input type="text" class="form-control" id="profileName" placeholder="My Custom Profile">
+                </div>
+                <div class="preset-buttons">
+                    <button class="btn btn--secondary btn--sm" data-preset="overall">Load Overall</button>
+                    <button class="btn btn--secondary btn--sm" data-preset="kids_friendly">Load Kids Friendly</button>
+                    <button class="btn btn--secondary btn--sm" data-preset="nightlife">Load Nightlife</button>
+                    <button class="btn btn--secondary btn--sm" data-preset="retirement">Load Retirement</button>
+                    <button class="btn btn--secondary btn--sm" data-preset="culture">Load Culture</button>
+                </div>
+                <div id="criteriaSliders" class="criteria-sliders"></div>
+                <div class="form-group">
+                    <label class="form-label">Profile Signature</label>
+                    <textarea class="form-control" id="profileSignature" rows="3" readonly></textarea>
+                    <button class="btn btn--secondary btn--sm" id="copySignature">Copy</button>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn--secondary" id="cancelCriteria">Cancel</button>
+                <button class="btn btn--primary" id="applyCriteria">Apply Criteria</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

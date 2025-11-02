@@ -176,12 +176,12 @@
         // Load CSV files
         async function loadData() {
             try {
-                const statsResponse = await fetch('data/city-stats-1.csv');
+                const statsResponse = await fetch('../../../data/city-stats-1.csv');
                 const statsText = await statsResponse.text();
                 const statsParsed = Papa.parse(statsText, { header: true });
                 cityStats = statsParsed.data.filter(row => row.city);
                 
-                const citiesResponse = await fetch('data/cities.csv');
+                const citiesResponse = await fetch('../../../data/cities.csv');
                 const citiesText = await citiesResponse.text();
                 const citiesParsed = Papa.parse(citiesText, { header: true });
                 cityInfo = citiesParsed.data.filter(row => row.name);

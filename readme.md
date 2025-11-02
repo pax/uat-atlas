@@ -1,10 +1,12 @@
+# City Atlas
+
 City profile and comparisons based on number of venues
 
 
 Answer questions like: I want to move to ?
 
 
-use data fetched with [gmaps-bookmarklet](../gmaps-bookmarklet/)
+use data fetched with [pax/gis-places-osint](https://github.com/pax/gis-places-osint)
 
 - non stop shops
 - pharmacies, non stop
@@ -20,12 +22,15 @@ create city profiles, maps
 - [ ] split categories by parent categories / grouping
 - [ ] read data from db/api?
 - [ ] norm to population
+- [ ] icons for categories
 - [ ] how to calculate scores?
 - [ ] add INS data
 
 - [ ] multi lang
 - [ ] text to sql - hugginface trained model
 - [ ] Reddit threads - vreau să mă mut în <City>
+
+see <prototypes/claude/> and <prototypes/perplexity/>
 
 see [reference/brainstorming/]
 
@@ -51,9 +56,18 @@ see [reference/brainstorming/]
 
 ### Overall table
 
+heatmap 
+can select cities, variables
+custom criteria widget / prefilled profiles
+
 ### City comparison side-by-side
 
+somewhat similar with _Overall table_ more focused / dedicated UI, a bit towards _City Profile_
+
 ### Criteria builder
+
+percentage slider for each criteria
+pre-built sample criterias (kids friendly, nighltife, culture, retirement)
 
 ### Report analysis
 

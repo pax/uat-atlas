@@ -804,7 +804,7 @@ tbody td.total-cell {
 
     // --- DATA FETCH & INIT ---
     document.addEventListener('DOMContentLoaded', () => {
-      fetch('data/city-stats-2.csv')
+      fetch('../../../data/city-stats-2.csv')
         .then(response => {
           if (!response.ok) throw new Error('Failed to load city-stats-2.csv');
           return response.text();

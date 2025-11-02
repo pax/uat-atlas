@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CityProfiler.ro - Find Your Perfect City in Romania</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Navigation -->
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="nav-brand">
+                    <h1>CityProfiler.ro</h1>
+                </div>
+                <div class="nav-menu">
+                    <button class="nav-item" data-view="home">Home</button>
+                    <button class="nav-item" data-view="compare">Compare</button>
+                    <button class="nav-item" data-view="criteria">Criteria Builder</button>
+                    <select id="language" class="nav-select">
+                        <option value="en">English</option>
+                        <option value="ro">Română</option>
+                    </select>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Hero Section -->
+        <section id="hero" class="hero">
+            <div class="hero-content">
+                <h2>Find your <span class="highlight">Perfect City</span> in Romania</h2>
+                <p>Compare cities, see city profiles, look for cities that are good for: 
+                   <span class="tag">family life</span>, <span class="tag">fun</span>, 
+                   <span class="tag">retirement</span>, <span class="tag">night life</span> and more.</p>
+            </div>
+        </section>
+
+        <!-- Criteria Selection -->
+        <section class="criteria-selector">
+            <div class="container">
+                <label>Choose criteria:</label>
+                <div class="criteria-pills">
+                    <button class="pill active" data-criteria="overall">Overall</button>
+                    <button class="pill" data-criteria="family">Kids & Family</button>
+                    <button class="pill" data-criteria="nightlife">Night Life</button>
+                    <button class="pill" data-criteria="retirement">Retirement</button>
+                    <button class="pill" data-criteria="culture">Culture</button>
+                    <button class="pill" data-criteria="health">Health & Wellness</button>
+                    <button class="pill" data-criteria="custom">Custom →</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- View Toggle -->
+        <section class="view-toggle">
+            <div class="container">
+                <div class="toggle-buttons">
+                    <button class="toggle-btn active" data-toggle="map">Map View</button>
+                    <button class="toggle-btn" data-toggle="list">List View</button>
+                    <button class="toggle-btn" data-toggle="table">Table View</button>
+                </div>
+                <div class="filters">
+                    <input type="text" id="search" placeholder="Search cities...">
+                    <select id="sort">
+                        <option value="score">Sort by Score ↓</option>
+                        <option value="population">Sort by Population ↓</option>
+                        <option value="name">Sort by Name A-Z</option>
+                    </select>
+                </div>
+            </div>
+        </section>
+
+        <!-- Main Content Area -->
+        <main id="main-content" class="main-content">
+            <!-- Map View -->
+            <div id="map-view" class="view-panel active">
+                <div id="map"></div>
+            </div>
+
+            <!-- List View -->
+            <div id="list-view" class="view-panel">
+                <div class="container">
+                    <div id="cities-list" class="cities-grid"></div>
+                </div>
+            </div>
+
+            <!-- Table View -->
+            <div id="table-view" class="view-panel">
+                <div class="container">
+                    <div class="table-controls">
+                        <label>
+                            <input type="checkbox" id="heatmap-toggle" checked>
+                            Show as heatmap
+                        </label>
+                    </div>
+                    <div id="comparison-table-wrapper">
+                        <table id="comparison-table" class="comparison-table">
+                            <thead>
+                                <tr id="table-header"></tr>
+                            </thead>
+                            <tbody id="table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- City Profile Modal -->
+            <div id="city-modal" class="modal">
+                <div class="modal-content">
+                    <span class="modal-close">&times;</span>
+                    <div id="city-profile"></div>
+                </div>
+            </div>
+
+            <!-- Comparison View -->
+            <div id="comparison-view" class="view-panel">
+                <div class="container">
+                    <h3>City Comparison</h3>
+                    <div class="comparison-cities" id="comparison-cities"></div>
+                    <div class="comparison-chart">
+                        <canvas id="comparison-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Criteria Builder -->
+            <div id="criteria-builder" class="view-panel">
+                <div class="container">
+                    <h3>Custom Criteria Builder</h3>
+                    <p>Adjust the importance of each factor to create your personalized city ranking:</p>
+                    <div id="criteria-sliders"></div>
+                    <div class="criteria-actions">
+                        <button id="save-criteria" class="btn btn-primary">Save Criteria</button>
+                        <button id="apply-criteria" class="btn btn-secondary">Apply</button>
+                        <input type="text" id="criteria-name" placeholder="Name your criteria...">
+                    </div>
+                    <div class="saved-criteria">
+                        <h4>Saved Profiles</h4>
+                        <div id="saved-profiles"></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Floating Action Button -->
+        <div id="fab" class="fab">
+            <span id="compare-count">Compare (0/3)</span>
+        </div>
+
+        <!-- Loading Indicator -->
+        <div id="loading" class="loading">
+            <div class="spinner"></div>
+            <p>Loading city data...</p>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
