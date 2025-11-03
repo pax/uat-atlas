@@ -13,6 +13,235 @@
     <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
     
     <style>
+:root {
+  /* Primitive Color Tokens */
+  --color-white: rgba(255, 255, 255, 1);
+  --color-black: rgba(0, 0, 0, 1);
+  --color-cream-50: rgba(252, 252, 249, 1);
+  --color-cream-100: rgba(255, 255, 253, 1);
+  --color-gray-200: rgba(245, 245, 245, 1);
+  --color-gray-300: rgba(167, 169, 169, 1);
+  --color-gray-400: rgba(119, 124, 124, 1);
+  --color-slate-500: rgba(98, 108, 113, 1);
+  --color-brown-600: rgba(94, 82, 64, 1);
+  --color-charcoal-700: rgba(31, 33, 33, 1);
+  --color-charcoal-800: rgba(38, 40, 40, 1);
+  --color-slate-900: rgba(19, 52, 59, 1);
+  --color-teal-300: rgba(50, 184, 198, 1);
+  --color-teal-400: rgba(45, 166, 178, 1);
+  --color-teal-500: rgba(33, 128, 141, 1);
+  --color-teal-600: rgba(29, 116, 128, 1);
+  --color-teal-700: rgba(26, 104, 115, 1);
+  --color-teal-800: rgba(41, 150, 161, 1);
+  --color-red-400: rgba(255, 84, 89, 1);
+  --color-red-500: rgba(192, 21, 47, 1);
+  --color-orange-400: rgba(230, 129, 97, 1);
+  --color-orange-500: rgba(168, 75, 47, 1);
+
+  /* RGB versions for opacity control */
+  --color-brown-600-rgb: 94, 82, 64;
+  --color-teal-500-rgb: 33, 128, 141;
+  --color-slate-900-rgb: 19, 52, 59;
+  --color-slate-500-rgb: 98, 108, 113;
+  --color-red-500-rgb: 192, 21, 47;
+  --color-red-400-rgb: 255, 84, 89;
+  --color-orange-500-rgb: 168, 75, 47;
+  --color-orange-400-rgb: 230, 129, 97;
+
+  /* Background color tokens (Light Mode) */
+  --color-bg-1: rgba(59, 130, 246, 0.08);
+  --color-bg-2: rgba(245, 158, 11, 0.08);
+  --color-bg-3: rgba(34, 197, 94, 0.08);
+  --color-bg-4: rgba(239, 68, 68, 0.08);
+  --color-bg-5: rgba(147, 51, 234, 0.08);
+  --color-bg-6: rgba(249, 115, 22, 0.08);
+  --color-bg-7: rgba(236, 72, 153, 0.08);
+  --color-bg-8: rgba(6, 182, 212, 0.08);
+
+  /* Semantic Color Tokens (Light Mode) */
+  --color-background: var(--color-cream-50);
+  --color-surface: var(--color-cream-100);
+  --color-text: var(--color-slate-900);
+  --color-text-secondary: var(--color-slate-500);
+  --color-primary: var(--color-teal-500);
+  --color-primary-hover: var(--color-teal-600);
+  --color-primary-active: var(--color-teal-700);
+  --color-secondary: rgba(var(--color-brown-600-rgb), 0.12);
+  --color-secondary-hover: rgba(var(--color-brown-600-rgb), 0.2);
+  --color-secondary-active: rgba(var(--color-brown-600-rgb), 0.25);
+  --color-border: rgba(var(--color-brown-600-rgb), 0.2);
+  --color-btn-primary-text: var(--color-cream-50);
+  --color-card-border: rgba(var(--color-brown-600-rgb), 0.12);
+  --color-card-border-inner: rgba(var(--color-brown-600-rgb), 0.12);
+  --color-error: var(--color-red-500);
+  --color-success: var(--color-teal-500);
+  --color-warning: var(--color-orange-500);
+  --color-info: var(--color-slate-500);
+  --color-focus-ring: rgba(var(--color-teal-500-rgb), 0.4);
+  --color-select-caret: rgba(var(--color-slate-900-rgb), 0.8);
+
+  /* Common style patterns */
+  --focus-ring: 0 0 0 3px var(--color-focus-ring);
+  --focus-outline: 2px solid var(--color-primary);
+  --status-bg-opacity: 0.15;
+  --status-border-opacity: 0.25;
+  --select-caret-light: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23134252' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  --select-caret-dark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23f5f5f5' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+
+  /* RGB versions for opacity control */
+  --color-success-rgb: 33, 128, 141;
+  --color-error-rgb: 192, 21, 47;
+  --color-warning-rgb: 168, 75, 47;
+  --color-info-rgb: 98, 108, 113;
+
+  /* Typography */
+  --font-family-base: "FKGroteskNeue", "Geist", "Inter", -apple-system,
+    BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-family-mono: "Berkeley Mono", ui-monospace, SFMono-Regular, Menlo,
+    Monaco, Consolas, monospace;
+  --font-size-xs: 11px;
+  --font-size-sm: 12px;
+  --font-size-base: 14px;
+  --font-size-md: 14px;
+  --font-size-lg: 16px;
+  --font-size-xl: 18px;
+  --font-size-2xl: 20px;
+  --font-size-3xl: 24px;
+  --font-size-4xl: 30px;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 550;
+  --font-weight-bold: 600;
+  --line-height-tight: 1.2;
+  --line-height-normal: 1.5;
+  --letter-spacing-tight: -0.01em;
+
+  /* Spacing */
+  --space-0: 0;
+  --space-1: 1px;
+  --space-2: 2px;
+  --space-4: 4px;
+  --space-6: 6px;
+  --space-8: 8px;
+  --space-10: 10px;
+  --space-12: 12px;
+  --space-16: 16px;
+  --space-20: 20px;
+  --space-24: 24px;
+  --space-32: 32px;
+
+  /* Border Radius */
+  --radius-sm: 6px;
+  --radius-base: 8px;
+  --radius-md: 10px;
+  --radius-lg: 12px;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.02);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.04),
+    0 2px 4px -1px rgba(0, 0, 0, 0.02);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.04),
+    0 4px 6px -2px rgba(0, 0, 0, 0.02);
+  --shadow-inset-sm: inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.03);
+
+  /* Animation */
+  --duration-fast: 150ms;
+  --duration-normal: 250ms;
+  --ease-standard: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Layout */
+  --container-sm: 640px;
+  --container-md: 768px;
+  --container-lg: 1024px;
+  --container-xl: 1280px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-gray-400-rgb: 119, 124, 124;
+    --color-teal-300-rgb: 50, 184, 198;
+    --color-gray-300-rgb: 167, 169, 169;
+    --color-gray-200-rgb: 245, 245, 245;
+
+    --color-bg-1: rgba(29, 78, 216, 0.15);
+    --color-bg-2: rgba(180, 83, 9, 0.15);
+    --color-bg-3: rgba(21, 128, 61, 0.15);
+    --color-bg-4: rgba(185, 28, 28, 0.15);
+    --color-bg-5: rgba(107, 33, 168, 0.15);
+    --color-bg-6: rgba(194, 65, 12, 0.15);
+    --color-bg-7: rgba(190, 24, 93, 0.15);
+    --color-bg-8: rgba(8, 145, 178, 0.15);
+
+    --color-background: var(--color-charcoal-700);
+    --color-surface: var(--color-charcoal-800);
+    --color-text: var(--color-gray-200);
+    --color-text-secondary: rgba(var(--color-gray-300-rgb), 0.7);
+    --color-primary: var(--color-teal-300);
+    --color-primary-hover: var(--color-teal-400);
+    --color-primary-active: var(--color-teal-800);
+    --color-secondary: rgba(var(--color-gray-400-rgb), 0.15);
+    --color-secondary-hover: rgba(var(--color-gray-400-rgb), 0.25);
+    --color-secondary-active: rgba(var(--color-gray-400-rgb), 0.3);
+    --color-border: rgba(var(--color-gray-400-rgb), 0.3);
+    --color-error: var(--color-red-400);
+    --color-success: var(--color-teal-300);
+    --color-warning: var(--color-orange-400);
+    --color-info: var(--color-gray-300);
+    --color-focus-ring: rgba(var(--color-teal-300-rgb), 0.4);
+    --color-btn-primary-text: var(--color-slate-900);
+    --color-card-border: rgba(var(--color-gray-400-rgb), 0.2);
+    --color-card-border-inner: rgba(var(--color-gray-400-rgb), 0.15);
+    --shadow-inset-sm: inset 0 1px 0 rgba(255, 255, 255, 0.1),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.15);
+    --button-border-secondary: rgba(var(--color-gray-400-rgb), 0.2);
+    --color-border-secondary: rgba(var(--color-gray-400-rgb), 0.2);
+    --color-select-caret: rgba(var(--color-gray-200-rgb), 0.8);
+
+    --focus-ring: 0 0 0 3px var(--color-focus-ring);
+    --focus-outline: 2px solid var(--color-primary);
+    --status-bg-opacity: 0.15;
+    --status-border-opacity: 0.25;
+    --select-caret-light: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23134252' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    --select-caret-dark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23f5f5f5' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+
+    --color-success-rgb: var(--color-teal-300-rgb);
+    --color-error-rgb: var(--color-red-400-rgb);
+    --color-warning-rgb: var(--color-orange-400-rgb);
+    --color-info-rgb: var(--color-gray-300-rgb);
+  }
+}
+
+[data-color-scheme="dark"] { /* duplicated for manual switch support */ }
+[data-color-scheme="light"] { /* duplicated for manual switch support */ }
+
+html {
+  font-size: var(--font-size-base);
+  font-family: var(--font-family-base);
+  line-height: var(--line-height-normal);
+  color: var(--color-text);
+  background-color: var(--color-background);
+  -webkit-font-smoothing: antialiased;
+  box-sizing: border-box;
+}
+body { margin: 0; padding: 0; }
+*, *::before, *::after { box-sizing: inherit; }
+
+h1,h2,h3,h4,h5,h6 { margin: 0; font-weight: var(--font-weight-semibold); line-height: var(--line-height-tight); color: var(--color-text); letter-spacing: var(--letter-spacing-tight); }
+h1 { font-size: var(--font-size-4xl); }
+h2 { font-size: var(--font-size-3xl); }
+h3 { font-size: var(--font-size-2xl); }
+
+.btn { display:inline-flex; align-items:center; justify-content:center; padding: var(--space-8) var(--space-16); border-radius: var(--radius-base); font-size: var(--font-size-base); font-weight:500; cursor:pointer; transition: all var(--duration-normal) var(--ease-standard); border:none; text-decoration:none; position:relative; }
+.btn:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+.btn--primary { background: var(--color-primary); color: var(--color-btn-primary-text); }
+.btn--primary:hover { background: var(--color-primary-hover); }
+
+@font-face { font-family: 'FKGroteskNeue'; src: url('https://r2cdn.perplexity.ai/fonts/FKGroteskNeue.woff2') format('woff2'); }
+
+/* App custom styles start */
         :root {
             --color-white: rgba(255, 255, 255, 1);
             --color-cream-50: rgba(252, 252, 249, 1);
@@ -213,21 +442,22 @@
         
         .profiles-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: var(--space-12);
+            grid-template-columns: 1fr;
+            gap: var(--space-8);
             margin-bottom: var(--space-16);
         }
         
         .profile-btn {
-            padding: var(--space-12);
+            padding: var(--space-8) var(--space-12);
             border: 1px solid var(--color-border);
             border-radius: var(--radius-base);
             background-color: var(--color-surface);
             color: var(--color-text);
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 500;
             cursor: pointer;
             transition: all 0.2s;
+            text-align: left;
         }
         
         .profile-btn:hover {
@@ -387,6 +617,16 @@
             margin-bottom: var(--space-16);
         }
         
+        /* Modal styles */
+        .modal.hidden { display: none; }
+        .modal { position: fixed; inset: 0; z-index: 1000; }
+        .modal__backdrop { position: absolute; inset: 0; background: rgba(0,0,0,0.35); }
+        .modal__content { position: relative; max-width: 800px; margin: 5vh auto; background: var(--color-surface); border: 1px solid var(--color-card-border); border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); overflow: hidden; }
+        .city-meta { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: var(--space-12); margin-bottom: var(--space-16); }
+        .sm-links { display: flex; gap: var(--space-8); }
+        .link-icon { text-decoration: none; font-size: 18px; }
+        .link-icon:hover { transform: scale(1.05); }
+
         @media (max-width: 768px) {
             .app-container {
                 flex-direction: column;
@@ -406,15 +646,14 @@
         <div class="sidebar">
             <h1>City Comparison</h1>
             
-            <!-- File Upload Section -->
+            <!-- Data Import (auto-load from same folder) -->
             <div class="section">
                 <h3>Data Import</h3>
-                <div class="upload-area">
-                    <div class="file-input-wrapper">
-                        <input type="file" id="fileInput" accept=".csv,.json">
-                        <label for="fileInput" class="file-input-label">Choose File</label>
+                <div class="upload-area" id="dataStatus">
+                    <div style="font-size:13px; color:var(--color-text-secondary);">
+                        Automatically loading <strong>city_data_export.json</strong> from this folder...
                     </div>
-                    <span class="file-name" id="fileName">No file selected</span>
+                    <div class="file-name" id="fileName">Loading...</div>
                 </div>
             </div>
             
@@ -422,10 +661,12 @@
             <div class="section">
                 <h3>Profiles</h3>
                 <div class="profiles-grid">
-                    <button class="profile-btn" data-profile="kids">Kids Friendly</button>
-                    <button class="profile-btn" data-profile="nightlife">Nightlife</button>
-                    <button class="profile-btn" data-profile="retirement">Retirement</button>
-                    <button class="profile-btn" data-profile="culture">Culture</button>
+                    <button class="profile-btn" data-profile="wellness">Wellness &amp; Healthcare</button>
+                    <button class="profile-btn" data-profile="culture">Culture &amp; Entertainment</button>
+                    <button class="profile-btn" data-profile="urban">Young Professionals</button>
+                    <button class="profile-btn" data-profile="family">Family-Oriented</button>
+                    <button class="profile-btn" data-profile="retiree">Retiree Haven</button>
+                    <button class="profile-btn" data-profile="balanced">Balanced City Life</button>
                 </div>
                 
                 <div class="custom-profile-section">
@@ -455,10 +696,143 @@
             <div id="tableContainer">
                 <div class="empty-state">
                     <div class="empty-state-icon">📊</div>
-                    <p>Upload a CSV or JSON file to get started</p>
-                    <p style="font-size: 13px;">Expected format: city, property1, property2, ...</p>
+                    <p>Upload a JSON file to get started</p>
+                    <p style="font-size: 13px;">Expected format: cities array with scores and social_media objects</p>
                 </div>
             </div>
+
+            <div class="section" style="margin-top: var(--space-24);">
+                <h3>Export Script (Python)</h3>
+                <div class="card">
+                    <div class="card__body">
+                        <p style="margin-bottom: var(--space-12); color: var(--color-text-secondary);">Use this script to export the static JSON (city_data_export.json) by merging city_meta with normalized scores from transposed_scores or city_scores.</p>
+                        <details>
+                            <summary style="cursor:pointer; margin-bottom: var(--space-12);">Show Python export script</summary>
+<pre><code id="pythonScript">#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Build city_data_export.json for the web app.
+Inputs (place alongside this script):
+  - city_meta.json           # list of city objects with id, name, county, population, area and social media fields
+  - transposed_scores.json   # preferred (normalized 0-100). Either {"cities": [{"id":..., "scores": {...}}]} or {id: {cat: score}}
+  - city_scores.json         # fallback (normalized 0-100) with same shape as above
+Output:
+  - city_data_export.json    # {"cities": [...]} as required by the app
+"""
+
+import json
+from pathlib import Path
+
+ALL_CATEGORIES = [
+    'ATMs','Books','Bus stations','Churches','Cinema','Clubs (dancing)',
+    'Dental','Dentist','Dentist + Clinic','Doctor','Fast Food','Gyms Fitness',
+    'Hospitals','Hotels','Lodging','Museums','Other Places of Worship',
+    'Pharmacies','Pub Cafe','Restaurants','Schools','Shopping','University',
+    'beauty wellness','culture_centers','dental_clinic','event_venue','gov',
+    'post_office','shopping_mall','sports','swimming_pool','theatre','veterinary_animals'
+]
+
+HERE = Path(__file__).parent
+
+def load_json(p: Path):
+    if p.exists():
+        with p.open('r', encoding='utf-8') as f:
+            return json.load(f)
+    return None
+
+# Normalize scores container into {id: {category: score}}
+def normalize_scores(raw):
+    if raw is None:
+        return {}
+    # Case 1: {"cities": [{"id":, "scores": {...}}]}
+    if isinstance(raw, dict) and 'cities' in raw and isinstance(raw['cities'], list):
+        out = {}
+        for item in raw['cities']:
+            cid = item.get('id')
+            scores = item.get('scores', {}) or {}
+            if cid is not None:
+                out[str(cid)] = scores
+        return out
+    # Case 2: mapping {id: {cat: score}}
+    if isinstance(raw, dict):
+        # Ensure keys are strings
+        return {str(k): v for k, v in raw.items() if isinstance(v, dict)}
+    # Case 3: list of {id: ..., scores: {...}}
+    if isinstance(raw, list):
+        out = {}
+        for item in raw:
+            if not isinstance(item, dict):
+                continue
+            cid = item.get('id')
+            scores = item.get('scores', {}) or {}
+            if cid is not None:
+                out[str(cid)] = scores
+        return out
+    return {}
+
+city_meta = load_json(HERE / 'city_meta.json') or []
+transposed_scores = normalize_scores(load_json(HERE / 'transposed_scores.json'))
+city_scores = normalize_scores(load_json(HERE / 'city_scores.json'))
+
+scores_by_id = transposed_scores if transposed_scores else city_scores
+
+cities_out = []
+for m in city_meta:
+    cid = str(m.get('id', m.get('city_id', '')))
+    meta_social = {
+        'official website': m.get('official website') or m.get('official_website') or '',
+        'YouTube handle': m.get('YouTube handle') or m.get('youtube_handle') or '',
+        'YouTube channel ID': m.get('YouTube channel ID') or m.get('youtube_channel_id') or '',
+        'Facebook location ID': m.get('Facebook location ID') or m.get('facebook_location_id') or '',
+        'Facebook username': m.get('Facebook username') or m.get('facebook_username') or ''
+    }
+
+    score_map = {cat: 0 for cat in ALL_CATEGORIES}
+    if cid in scores_by_id:
+        for cat, val in scores_by_id[cid].items():
+            try:
+                v = float(val)
+            except Exception:
+                continue
+            # Clamp to 0..100
+            v = max(0.0, min(100.0, v))
+            if cat in score_map:
+                score_map[cat] = v
+            else:
+                # If category label differs slightly, keep it as-is too
+                score_map[cat] = v
+
+    cities_out.append({
+        'id': m.get('id'),
+        'name': m.get('name') or m.get('city') or '',
+        'county': m.get('county') or '',
+        'population': m.get('population') or None,
+        'area': m.get('area') or None,
+        'scores': score_map,
+        'social_media': meta_social
+    })
+
+with (HERE / 'city_data_export.json').open('w', encoding='utf-8') as f:
+    json.dump({'cities': cities_out}, f, ensure_ascii=False, indent=2)
+
+print('Wrote city_data_export.json with', len(cities_out), 'cities')
+</code></pre>
+                        <button id="copyScriptBtn" class="btn btn--sm">Copy</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- City Details Modal -->
+    <div id="cityModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="cityModalTitle">
+        <div class="modal__backdrop"></div>
+        <div class="modal__content card">
+            <div class="card__header flex justify-between items-center">
+                <h3 id="cityModalTitle">City Details</h3>
+                <button id="closeCityModal" class="btn btn--outline btn--sm">Close</button>
+            </div>
+            <div class="card__body" id="cityModalBody"></div>
         </div>
     </div>
     
@@ -470,75 +844,129 @@
         let dataTable = null;
         let customProfiles = [];
         
-        // Predefined profiles
+        // All 34 categories
+        const ALL_CATEGORIES = [
+            'ATMs', 'Books', 'Bus stations', 'Churches', 'Cinema', 'Clubs (dancing)',
+            'Dental', 'Dentist', 'Dentist + Clinic', 'Doctor', 'Fast Food', 'Gyms Fitness',
+            'Hospitals', 'Hotels', 'Lodging', 'Museums', 'Other Places of Worship',
+            'Pharmacies', 'Pub Cafe', 'Restaurants', 'Schools', 'Shopping', 'University',
+            'beauty wellness', 'culture_centers', 'dental_clinic', 'event_venue', 'gov',
+            'post_office', 'shopping_mall', 'sports', 'swimming_pool', 'theatre', 'veterinary_animals'
+        ];
+        
+        // Predefined profiles with actual weights
         const predefinedProfiles = {
-            kids: {
-                name: "Kids Friendly",
+            wellness: {
+                name: "Wellness &amp; Healthcare",
                 weights: {
-                    safety: 30,
-                    parks: 25,
-                    schools: 25,
-                    entertainment: 20
-                }
-            },
-            nightlife: {
-                name: "Nightlife",
-                weights: {
-                    bars_restaurants: 35,
-                    entertainment: 30,
-                    safety: 20,
-                    culture: 15
-                }
-            },
-            retirement: {
-                name: "Retirement",
-                weights: {
-                    healthcare: 35,
-                    safety: 25,
-                    parks: 20,
-                    cost_of_living: 20
+                    'Hospitals': 8, 'Doctor': 8, 'Dental': 7, 'Pharmacies': 7,
+                    'Gyms Fitness': 6, 'beauty wellness': 6, 'swimming_pool': 6,
+                    'Schools': 8, 'Restaurants': 8, 'Shopping': 8, 'Hotels': 7, 'University': 5
                 }
             },
             culture: {
-                name: "Culture",
+                name: "Culture &amp; Entertainment",
                 weights: {
-                    museums: 30,
-                    culture: 30,
-                    entertainment: 20,
-                    restaurants: 20
+                    'culture_centers': 10, 'Museums': 10, 'theatre': 9, 'event_venue': 8,
+                    'Cinema': 8, 'Clubs (dancing)': 8, 'Restaurants': 7, 'Pub Cafe': 6,
+                    'Lodging': 6, 'University': 6, 'Books': 5
+                }
+            },
+            urban: {
+                name: "Urban Living (Young Professionals)",
+                weights: {
+                    'University': 10, 'Books': 7, 'event_venue': 7, 'Restaurants': 9,
+                    'Pub Cafe': 8, 'Cinema': 7, 'Clubs (dancing)': 8, 'Shopping': 8,
+                    'ATMs': 6, 'Fast Food': 6, 'post_office': 4, 'Hospitals': 5, 'Pharmacies': 5
+                }
+            },
+            family: {
+                name: "Family-Oriented",
+                weights: {
+                    'Schools': 12, 'swimming_pool': 8, 'sports': 8, 'Restaurants': 7,
+                    'Shopping': 7, 'Cinema': 6, 'Hospitals': 7, 'Pharmacies': 6,
+                    'Doctor': 5, 'University': 5, 'Books': 5, 'Churches': 4, 'culture_centers': 4
+                }
+            },
+            retiree: {
+                name: "Retiree Haven",
+                weights: {
+                    'Hospitals': 12, 'Doctor': 10, 'Dentist': 8, 'Pharmacies': 7,
+                    'Museums': 6, 'culture_centers': 5, 'Churches': 6,
+                    'Other Places of Worship': 4, 'Shopping': 6, 'ATMs': 5,
+                    'post_office': 4, 'Restaurants': 4
+                }
+            },
+            balanced: {
+                name: "Balanced City Life",
+                weights: {
+                    'Hospitals': 5, 'Doctor': 5, 'Schools': 5, 'University': 5,
+                    'Museums': 4, 'Shopping': 4, 'Restaurants': 4, 'Pharmacies': 3,
+                    'Hotels': 3, 'Cinema': 3, 'Churches': 3, 'ATMs': 3, 'Books': 3
                 }
             }
         };
         
         // File upload handler
-        document.getElementById('fileInput').addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-            
-            document.getElementById('fileName').textContent = file.name;
-            
-            const reader = new FileReader();
-            reader.onload = function(event) {
-                const content = event.target.result;
-                
-                if (file.name.endsWith('.json')) {
-                    parseJSON(content);
-                } else if (file.name.endsWith('.csv')) {
-                    parseCSV(content);
-                }
-            };
-            reader.readAsText(file);
-        });
+        // Previously file upload handler removed — we auto-load data from city_data_export.json
         
         // Parse JSON data
         function parseJSON(content) {
             try {
                 const data = JSON.parse(content);
-                processData(data);
+                // Check if data has 'cities' array
+                if (data.cities && Array.isArray(data.cities)) {
+                    processData(data.cities);
+                } else if (Array.isArray(data)) {
+                    processData(data);
+                } else {
+                    alert('Invalid JSON structure. Expected "cities" array.');
+                }
             } catch (error) {
                 alert('Error parsing JSON file: ' + error.message);
             }
         }
+
+        // Fetch default data file from same folder (city_data_export.json)
+        async function fetchDefaultData() {
+            const statusEl = document.getElementById('fileName');
+            const candidates = [
+                './city_data_export.json',
+                '/prototypes/v4/perplexity/city_data_export.json'
+            ];
+
+            for (const url of candidates) {
+                try {
+                    const resp = await fetch(url, { cache: 'no-cache' });
+                    if (!resp.ok) {
+                        console.debug('No data at', url, 'status', resp.status);
+                        continue;
+                    }
+                    const json = await resp.json();
+                    const payload = json.cities || json;
+                    if (Array.isArray(payload) && payload.length > 0) {
+                        statusEl.textContent = `Loaded: ${url}`;
+                        processData(payload);
+                        return;
+                    } else {
+                        console.debug('Loaded JSON but missing cities array at', url);
+                    }
+                } catch (err) {
+                    console.debug('Error fetching', url, err);
+                    continue;
+                }
+            }
+
+            // If we get here, loading failed
+            const container = document.getElementById('tableContainer');
+            document.getElementById('dataStatus').innerHTML = `<div class="error-state"><div class="error-message">Failed to load <strong>city_data_export.json</strong>. Please ensure the file is present in the same folder as this page.</div></div>`;
+            container.innerHTML = `<div class="empty-state"><div class="empty-state-icon">⚠️</div><p>Unable to load data automatically. You can still load data manually by adding <code>city_data_export.json</code> to this folder.</p></div>`;
+        }
+
+        // Kick off auto-load on DOM ready
+        document.addEventListener('DOMContentLoaded', function() {
+            fetchDefaultData();
+        });
         
         // Parse CSV data
         function parseCSV(content) {
@@ -575,28 +1003,39 @@
             
             cityData = data;
             
-            // Extract properties (all keys except 'city')
+            // Extract properties from scores object
             const firstItem = data[0];
-            properties = Object.keys(firstItem).filter(key => 
-                key.toLowerCase() !== 'city' && typeof firstItem[key] === 'number'
-            );
+            if (firstItem.scores && typeof firstItem.scores === 'object') {
+                properties = Object.keys(firstItem.scores);
+            } else {
+                // Fallback: extract numeric properties
+                properties = Object.keys(firstItem).filter(key => 
+                    key.toLowerCase() !== 'city' && 
+                    key.toLowerCase() !== 'name' && 
+                    key !== 'id' && 
+                    key !== 'county' && 
+                    key !== 'population' && 
+                    key !== 'area' && 
+                    key !== 'social_media' &&
+                    typeof firstItem[key] === 'number'
+                );
+            }
             
-            // Initialize weights equally
-            const equalWeight = Math.floor(100 / properties.length);
+            // Initialize weights to 0 for all categories
             weights = {};
-            properties.forEach(prop => {
-                weights[prop] = equalWeight;
+            ALL_CATEGORIES.forEach(cat => {
+                weights[cat] = 0;
             });
             
-            // Normalize to 100%
-            const total = Object.values(weights).reduce((sum, w) => sum + w, 0);
-            if (total !== 100 && properties.length > 0) {
-                weights[properties[0]] += (100 - total);
-            }
+            // Apply default balanced profile
+            applyProfile(predefinedProfiles.balanced.weights, false);
             
             createWeightControls();
             calculateScores();
             renderTable();
+            // Set Balanced profile active by default
+            const balancedBtn = document.querySelector('.profile-btn[data-profile="balanced"]');
+            if (balancedBtn) balancedBtn.classList.add('active');
         }
         
         // Create weight control sliders
@@ -604,16 +1043,18 @@
             const container = document.getElementById('weightControls');
             container.innerHTML = '';
             
-            properties.forEach(prop => {
+            ALL_CATEGORIES.forEach(cat => {
                 const control = document.createElement('div');
                 control.className = 'weight-control';
+                const weight = weights[cat] || 0;
+                const safeId = cat.replace(/[^a-zA-Z0-9]/g, '_');
                 control.innerHTML = `
                     <div class="weight-label">
-                        <span class="weight-name">${formatPropertyName(prop)}</span>
-                        <span class="weight-value" id="weight-${prop}">${weights[prop]}%</span>
+                        <span class="weight-name">${cat}</span>
+                        <span class="weight-value" id="weight-${safeId}">${weight}%</span>
                     </div>
-                    <input type="range" min="0" max="100" value="${weights[prop]}" 
-                           id="slider-${prop}" data-property="${prop}">
+                    <input type="range" min="0" max="100" value="${weight}" 
+                           id="slider-${safeId}" data-property="${cat}">
                 `;
                 container.appendChild(control);
                 
@@ -627,12 +1068,24 @@
         function handleWeightChange(e) {
             const property = e.target.dataset.property;
             const value = parseInt(e.target.value);
+            const safeId = property.replace(/[^a-zA-Z0-9]/g, '_');
             
             weights[property] = value;
-            document.getElementById(`weight-${property}`).textContent = value + '%';
+            document.getElementById(`weight-${safeId}`).textContent = value + '%';
             
             calculateScores();
             updateTable();
+        }
+        
+        // Get score value from city data
+        function getScore(city, category) {
+            if (city.scores && city.scores[category] !== undefined) {
+                return city.scores[category];
+            }
+            if (city[category] !== undefined) {
+                return city[category];
+            }
+            return 0;
         }
         
         // Calculate weighted scores
@@ -641,10 +1094,12 @@
                 let score = 0;
                 let totalWeight = 0;
                 
-                properties.forEach(prop => {
-                    if (city[prop] !== undefined && city[prop] !== null) {
-                        score += city[prop] * weights[prop];
-                        totalWeight += weights[prop];
+                ALL_CATEGORIES.forEach(cat => {
+                    const categoryScore = getScore(city, cat);
+                    const weight = weights[cat] || 0;
+                    if (weight > 0) {
+                        score += categoryScore * weight;
+                        totalWeight += weight;
                     }
                 });
                 
@@ -652,74 +1107,112 @@
             });
         }
         
-        // Get heatmap color based on value and min/max
-        function getHeatmapColor(value, min, max) {
-            if (min === max) return 'rgba(255, 255, 200, 0.3)';
-            
-            const normalized = (value - min) / (max - min);
-            
-            let r, g, b;
-            if (normalized < 0.5) {
-                // Red to Yellow
-                const t = normalized * 2;
+        // Get heatmap color based on absolute score 0-100
+        function getHeatmapColor(value) {
+            const v = Math.max(0, Math.min(100, Number(value) || 0));
+            let r, g;
+            if (v <= 50) {
+                // 0..50: red -> yellow
+                const t = v / 50;
                 r = 255;
                 g = Math.floor(t * 255);
-                b = 0;
             } else {
-                // Yellow to Green
-                const t = (normalized - 0.5) * 2;
-                r = Math.floor((1 - t) * 255);
+                // 50..100: yellow -> green
+                const t = (v - 50) / 50;
+                r = Math.floor(255 * (1 - t));
                 g = 255;
-                b = 0;
             }
-            
-            return `rgba(${r}, ${g}, ${b}, 0.3)`;
+            return `rgba(${r}, ${g}, 0, 0.3)`;
         }
         
         // Calculate min/max for each property
         function getPropertyStats() {
             const stats = {};
             
-            properties.forEach(prop => {
-                const values = cityData.map(city => city[prop]).filter(v => v !== undefined && v !== null);
-                stats[prop] = {
-                    min: Math.min(...values),
-                    max: Math.max(...values)
-                };
+            ALL_CATEGORIES.forEach(cat => {
+                const values = cityData.map(city => getScore(city, cat)).filter(v => v !== undefined && v !== null);
+                if (values.length > 0) {
+                    stats[cat] = {
+                        min: Math.min(...values),
+                        max: Math.max(...values)
+                    };
+                } else {
+                    stats[cat] = { min: 0, max: 100 };
+                }
             });
             
             return stats;
+        }
+        
+        // Get social media links
+        function getSocialMediaLinks(city) {
+            const social = city.social_media || {};
+            let html = '<div style="display: flex; gap: 8px;">';
+            
+            if (social['official website']) {
+                html += `<a href="${social['official website']}" target="_blank" title="Official Website">🌐</a>`;
+            }
+            if (social['YouTube channel ID']) {
+                const ytUrl = `https://www.youtube.com/channel/${social['YouTube channel ID']}`;
+                html += `<a href="${ytUrl}" target="_blank" title="YouTube">▶️</a>`;
+            }
+            if (social['Facebook username']) {
+                const fbUrl = `https://www.facebook.com/${social['Facebook username']}`;
+                html += `<a href="${fbUrl}" target="_blank" title="Facebook">👍</a>`;
+            } else if (social['Facebook location ID']) {
+                const fbUrl = `https://www.facebook.com/${social['Facebook location ID']}`;
+                html += `<a href="${fbUrl}" target="_blank" title="Facebook">👍</a>`;
+            }
+            
+            html += '</div>';
+            return html || '-';
         }
         
         // Render DataTable
         function renderTable() {
             const container = document.getElementById('tableContainer');
             
-            // Find city column name (case insensitive)
-            const cityColumn = Object.keys(cityData[0]).find(key => key.toLowerCase() === 'city') || 'city';
-            
             // Create table HTML
             let tableHTML = '<table id="cityTable" class="display">';
             tableHTML += '<thead><tr>';
             tableHTML += '<th>City</th>';
+            tableHTML += '<th>County</th>';
+            tableHTML += '<th>Population</th>';
             tableHTML += '<th>Weighted Score</th>';
-            properties.forEach(prop => {
-                tableHTML += `<th>${formatPropertyName(prop)}</th>`;
+            tableHTML += '<th>Social Media</th>';
+            ALL_CATEGORIES.forEach(cat => {
+                tableHTML += `<th>${cat}</th>`;
             });
             tableHTML += '</tr></thead><tbody></tbody></table>';
             
             container.innerHTML = tableHTML;
-            
-            // Get property statistics for heatmap
-            const stats = getPropertyStats();
             
             // Initialize DataTable
             dataTable = $('#cityTable').DataTable({
                 data: cityData,
                 columns: [
                     { 
-                        data: cityColumn,
-                        title: 'City'
+                        data: 'name',
+                        title: 'City',
+                        defaultContent: '-',
+                        render: function(data, type, row) {
+                            const safeName = data || '-';
+                            const id = row.id !== undefined ? row.id : safeName;
+                            return `<a href="#" class="city-link" data-id="${id}">${safeName}</a>`;
+                        }
+                    },
+                    { 
+                        data: 'county',
+                        title: 'County',
+                        defaultContent: '-'
+                    },
+                    { 
+                        data: 'population',
+                        title: 'Population',
+                        defaultContent: '-',
+                        render: function(data) {
+                            return data ? data.toLocaleString() : '-';
+                        }
                     },
                     { 
                         data: 'weighted_score',
@@ -728,26 +1221,37 @@
                             return data.toFixed(2);
                         }
                     },
-                    ...properties.map(prop => ({
-                        data: prop,
-                        title: formatPropertyName(prop),
-                        createdCell: function(td, cellData, rowData, row, col) {
-                            const color = getHeatmapColor(cellData, stats[prop].min, stats[prop].max);
-                            td.style.backgroundColor = color;
+                    {
+                        data: null,
+                        title: 'Social Media',
+                        orderable: false,
+                        render: function(data, type, row) {
+                            return getSocialMediaLinks(row);
+                        }
+                    },
+                    ...ALL_CATEGORIES.map(cat => ({
+                        data: null,
+                        title: cat,
+                        render: function(data, type, row) {
+                            const score = getScore(row, cat);
+                            return Number.isFinite(score) ? score.toFixed(1) : '-';
+                        },
+                        createdCell: function(td, cellData, rowData) {
+                            const score = getScore(rowData, cat);
+                            td.style.backgroundColor = getHeatmapColor(score);
                         }
                     }))
                 ],
                 pageLength: 25,
-                order: [[1, 'desc']],
-                destroy: true
+                order: [[3, 'desc']],
+                destroy: true,
+                scrollX: true
             });
         }
         
         // Update existing table
         function updateTable() {
             if (!dataTable) return;
-            
-            const stats = getPropertyStats();
             
             dataTable.clear();
             dataTable.rows.add(cityData);
@@ -759,13 +1263,12 @@
                 const rowData = this.data();
                 const cells = rowNode.querySelectorAll('td');
                 
-                // Skip city and weighted_score columns (0 and 1)
-                properties.forEach((prop, index) => {
-                    const cellIndex = index + 2;
+                // Skip city, county, population, weighted_score, and social media columns (0-4)
+                ALL_CATEGORIES.forEach((cat, index) => {
+                    const cellIndex = index + 5;
                     if (cells[cellIndex]) {
-                        const value = rowData[prop];
-                        const color = getHeatmapColor(value, stats[prop].min, stats[prop].max);
-                        cells[cellIndex].style.backgroundColor = color;
+                        const value = getScore(rowData, cat);
+                        cells[cellIndex].style.backgroundColor = getHeatmapColor(value);
                     }
                 });
             });
@@ -782,7 +1285,9 @@
         document.querySelectorAll('.profile-btn').forEach(btn => {
             btn.addEventListener('click', function() {
                 const profileKey = this.dataset.profile;
-                applyProfile(predefinedProfiles[profileKey].weights);
+                const profile = predefinedProfiles[profileKey];
+                if (!profile) return;
+                applyProfile(profile.weights);
                 
                 // Update active state
                 document.querySelectorAll('.profile-btn').forEach(b => b.classList.remove('active'));
@@ -791,31 +1296,32 @@
         });
         
         // Apply profile weights
-        function applyProfile(profileWeights) {
+        function applyProfile(profileWeights, updateUI = true) {
             // Reset all weights to 0
-            properties.forEach(prop => {
-                weights[prop] = 0;
+            ALL_CATEGORIES.forEach(cat => {
+                weights[cat] = 0;
             });
             
             // Apply profile weights
-            Object.keys(profileWeights).forEach(prop => {
-                if (weights.hasOwnProperty(prop)) {
-                    weights[prop] = profileWeights[prop];
-                }
+            Object.keys(profileWeights).forEach(cat => {
+                weights[cat] = profileWeights[cat] || 0;
             });
             
             // Update UI
-            properties.forEach(prop => {
-                const slider = document.getElementById(`slider-${prop}`);
-                const valueDisplay = document.getElementById(`weight-${prop}`);
-                if (slider && valueDisplay) {
-                    slider.value = weights[prop];
-                    valueDisplay.textContent = weights[prop] + '%';
-                }
-            });
-            
-            calculateScores();
-            updateTable();
+            if (updateUI) {
+                ALL_CATEGORIES.forEach(cat => {
+                    const safeId = cat.replace(/[^a-zA-Z0-9]/g, '_');
+                    const slider = document.getElementById(`slider-${safeId}`);
+                    const valueDisplay = document.getElementById(`weight-${safeId}`);
+                    if (slider && valueDisplay) {
+                        slider.value = weights[cat] || 0;
+                        valueDisplay.textContent = (weights[cat] || 0) + '%';
+                    }
+                });
+                
+                calculateScores();
+                updateTable();
+            }
         }
         
         // Save custom profile
@@ -870,6 +1376,83 @@
                 });
             });
         }
+
+        // City details modal helpers
+        function findCityById(id) {
+            return cityData.find(c => String(c.id) === String(id)) || null;
+        }
+        
+        function getCityDetailsHTML(city) {
+            const social = city.social_media || {};
+            const website = social['official website'] ? `<a class="link-icon" href="${social['official website']}" target="_blank" title="Official Website">🌐</a>` : '';
+            const yt = social['YouTube channel ID'] ? `<a class="link-icon" href="https://www.youtube.com/channel/${social['YouTube channel ID']}" target="_blank" title="YouTube Channel">▶️</a>` : (social['YouTube handle'] ? `<a class="link-icon" href="https://www.youtube.com/@${social['YouTube handle'].replace(/^@/, '')}" target="_blank" title="YouTube Handle">▶️</a>` : '');
+            const fb = social['Facebook username'] ? `<a class="link-icon" href="https://www.facebook.com/${social['Facebook username']}" target="_blank" title="Facebook">👍</a>` : (social['Facebook location ID'] ? `<a class="link-icon" href="https://www.facebook.com/${social['Facebook location ID']}" target="_blank" title="Facebook Location">👍</a>` : '');
+            
+            let scoresHTML = '<div class="card" style="margin-top: var(--space-12);"><div class="card__body">';
+            scoresHTML += '<div style="display:grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: var(--space-8);">';
+            ALL_CATEGORIES.forEach(cat => {
+                const s = getScore(city, cat);
+                scoresHTML += `<div style="display:flex; justify-content:space-between; gap:8px; padding:6px; border:1px solid var(--color-card-border); border-radius:8px; background:${getHeatmapColor(s).replace('0.3','0.25')}"><span>${cat}</span><strong>${Number.isFinite(s) ? s.toFixed(1) : '-'}</strong></div>`;
+            });
+            scoresHTML += '</div></div></div>';
+
+            return `
+                <div class="city-meta">
+                    <div><strong>City:</strong> ${city.name || '-'}</div>
+                    <div><strong>County:</strong> ${city.county || '-'}</div>
+                    <div><strong>Population:</strong> ${city.population ? Number(city.population).toLocaleString() : '-'}</div>
+                    <div><strong>Area:</strong> ${city.area ? city.area : '-'}</div>
+                </div>
+                <div class="sm-links">${website}${yt}${fb}</div>
+                ${scoresHTML}
+            `;
+        }
+        
+        function showCityModal(city) {
+            const modal = document.getElementById('cityModal');
+            const body = document.getElementById('cityModalBody');
+            const title = document.getElementById('cityModalTitle');
+            title.textContent = city.name || 'City Details';
+            body.innerHTML = getCityDetailsHTML(city);
+            modal.classList.remove('hidden');
+        }
+        
+        function hideCityModal() {
+            document.getElementById('cityModal').classList.add('hidden');
+        }
+
+        document.getElementById('closeCityModal').addEventListener('click', hideCityModal);
+        document.getElementById('cityModal').addEventListener('click', function(e) {
+            if (e.target.classList.contains('modal__backdrop')) hideCityModal();
+        });
+
+        // Delegate click on city links inside the table
+        $(document).on('click', 'a.city-link', function(e) {
+            e.preventDefault();
+            const id = this.getAttribute('data-id');
+            const city = findCityById(id);
+            if (city) showCityModal(city);
+        });
+
+        // Export script copy functionality
+        document.addEventListener('click', function(e) {
+            if (e.target && e.target.id === 'copyScriptBtn') {
+                const code = document.getElementById('pythonScript').innerText;
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(code).then(() => {
+                        e.target.textContent = 'Copied';
+                        setTimeout(() => (e.target.textContent = 'Copy'), 1200);
+                    });
+                } else {
+                    const ta = document.createElement('textarea');
+                    ta.value = code;
+                    document.body.appendChild(ta);
+                    ta.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(ta);
+                }
+            }
+        });
     </script>
 </body>
 </html>

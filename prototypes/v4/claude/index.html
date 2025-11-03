@@ -16,8 +16,18 @@
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
             margin: 0;
-            padding: 20px;
+            padding: 0;
             background: #f5f5f5;
+            overflow-x: hidden;
+        }
+        
+        .main-content {
+            padding: 20px;
+            transition: margin-right 0.3s ease;
+        }
+        
+        .main-content.sidebar-open {
+            margin-right: 380px;
         }
         
         .container {
@@ -29,35 +39,129 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
         
-        h1 {
-            margin: 0 0 30px 0;
-            color: #333;
-        }
-        
-        .controls {
-            display: grid;
-            grid-template-columns: 1fr 250px;
-            gap: 30px;
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 30px;
         }
         
-        .weights-section {
-            max-height: 600px;
-            overflow-y: auto;
-            border: 1px solid #e0e0e0;
+        h1 {
+            margin: 0;
+            color: #333;
+        }
+        
+        .toggle-sidebar-btn {
+            padding: 12px 24px;
+            background: #4CAF50;
+            color: white;
+            border: none;
             border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.2s;
+        }
+        
+        .toggle-sidebar-btn:hover {
+            background: #45a049;
+        }
+        
+        .sidebar {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 380px;
+            height: 100vh;
+            background: white;
+            box-shadow: -2px 0 8px rgba(0,0,0,0.15);
+            transition: right 0.3s ease;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .sidebar.open {
+            right: 0;
+        }
+        
+        .sidebar-header {
+            padding: 20px;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f8f8f8;
+        }
+        
+        .sidebar-header h2 {
+            margin: 0;
+            font-size: 18px;
+            color: #333;
+        }
+        
+        .close-sidebar-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 0;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            color: #666;
+        }
+        
+        .close-sidebar-btn:hover {
+            background: #e0e0e0;
+        }
+        
+        .sidebar-content {
+            flex: 1;
+            overflow-y: auto;
             padding: 20px;
         }
         
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            z-index: 999;
+        }
+        
+        .sidebar-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
         .profiles-section {
-            border: 1px solid #e0e0e0;
-            border-radius: 4px;
-            padding: 20px;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e0e0e0;
         }
         
         .profiles-section h3 {
             margin: 0 0 15px 0;
             color: #333;
+            font-size: 16px;
+        }
+        
+        .weights-section h3 {
+            margin: 0 0 15px 0;
+            color: #333;
+            font-size: 16px;
         }
         
         .profile-btn {
@@ -138,6 +242,22 @@
             color: #333;
         }
         
+        .reset-btn {
+            padding: 8px 16px;
+            background: #ff5722;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            margin-bottom: 15px;
+            width: 100%;
+        }
+        
+        .reset-btn:hover {
+            background: #e64a19;
+        }
+        
         table.dataTable {
             width: 100% !important;
             border-collapse: collapse;
@@ -196,33 +316,66 @@
             overflow-x: auto;
         }
         
-        .reset-btn {
-            padding: 8px 16px;
-            background: #ff5722;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 13px;
-            margin-bottom: 15px;
-        }
-        
-        .reset-btn:hover {
-            background: #e64a19;
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 15px;
+            }
+            
+            .main-content.sidebar-open {
+                margin-right: 0;
+            }
+            
+            .container {
+                padding: 20px;
+            }
+            
+            .header {
+                flex-direction: column;
+                gap: 15px;
+                align-items: stretch;
+            }
+            
+            h1 {
+                font-size: 24px;
+            }
+            
+            .sidebar {
+                width: 100%;
+                right: -100%;
+            }
+            
+            .sidebar.open {
+                right: 0;
+            }
+            
+            table.dataTable thead th {
+                font-size: 11px;
+                padding: 8px 4px;
+            }
+            
+            table.dataTable tbody td {
+                font-size: 11px;
+                padding: 6px 4px;
+            }
+            
+            .city-name {
+                min-width: 100px;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>City Comparison Table</h1>
-        
-        <div class="controls">
-            <div class="weights-section">
-                <h3>Weighted Score Settings</h3>
-                <button class="reset-btn" onclick="resetWeights()">Reset All Weights</button>
-                <div id="weight-controls"></div>
-            </div>
-            
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+    
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2>Settings</h2>
+            <button class="close-sidebar-btn" onclick="toggleSidebar()" aria-label="Close sidebar">×</button>
+        </div>
+        <div class="sidebar-content">
             <div class="profiles-section">
                 <h3>Saved Profiles</h3>
                 <button class="profile-btn" data-profile="kids">Kids Friendly</button>
@@ -231,14 +384,33 @@
                 <button class="profile-btn" data-profile="culture">Culture</button>
                 <button class="profile-btn" data-profile="balanced">Balanced</button>
             </div>
+            
+            <div class="weights-section">
+                <h3>Custom Weights</h3>
+                <button class="reset-btn" onclick="resetWeights()">Reset All Weights</button>
+                <div id="weight-controls"></div>
+            </div>
         </div>
-        
-        <table id="cityTable" class="display" style="width:100%">
-            <thead>
-                <tr id="tableHeader"></tr>
-            </thead>
-            <tbody id="tableBody"></tbody>
-        </table>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="main-content" id="mainContent">
+        <div class="container">
+            <div class="header">
+                <h1>City Comparison Table</h1>
+                <button class="toggle-sidebar-btn" onclick="toggleSidebar()">
+                    <span>⚙️</span>
+                    <span>Settings & Profiles</span>
+                </button>
+            </div>
+            
+            <table id="cityTable" class="display" style="width:100%">
+                <thead>
+                    <tr id="tableHeader"></tr>
+                </thead>
+                <tbody id="tableBody"></tbody>
+            </table>
+        </div>
     </div>
     
     <!-- jQuery -->
@@ -251,6 +423,31 @@
         let citiesData = null;
         let dataTable = null;
         let weights = {};
+        
+        // Toggle sidebar
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.querySelector('.sidebar-overlay');
+            const mainContent = document.getElementById('mainContent');
+            
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('active');
+            
+            // On desktop, adjust main content margin
+            if (window.innerWidth > 768) {
+                mainContent.classList.toggle('sidebar-open');
+            }
+        }
+        
+        // Close sidebar on escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                const sidebar = document.getElementById('sidebar');
+                if (sidebar.classList.contains('open')) {
+                    toggleSidebar();
+                }
+            }
+        });
         
         // Profile definitions (weights as percentages that sum to 100)
         const profiles = {
@@ -393,7 +590,7 @@
                     const value = parseFloat(e.target.value);
                     weights[category] = value;
                     valueDisplay.textContent = `${value.toFixed(1)}%`;
-                    updateTable();
+                    updateTableWithSort();
                 });
             });
         }
@@ -417,12 +614,15 @@
             // Update UI
             citiesData.categories.forEach(category => {
                 const slider = document.getElementById(`weight-${category}`);
-                const valueDisplay = slider.parentElement.querySelector('.weight-value');
-                slider.value = weights[category];
-                valueDisplay.textContent = `${weights[category].toFixed(1)}%`;
+                if (slider) {
+                    const valueDisplay = slider.parentElement.querySelector('.weight-value');
+                    slider.value = weights[category];
+                    valueDisplay.textContent = `${weights[category].toFixed(1)}%`;
+                }
             });
             
-            updateTable();
+            // Update and re-sort table
+            updateTableWithSort();
         }
         
         // Setup profile button listeners
@@ -441,7 +641,7 @@
             initializeWeights(citiesData.categories);
             renderWeightControls();
             document.querySelectorAll('.profile-btn').forEach(b => b.classList.remove('active'));
-            updateTable();
+            updateTableWithSort();
         }
         
         // Format social media links
@@ -513,20 +713,27 @@
             });
         }
         
-        // Update table when weights change
-        function updateTable() {
-            const tbody = document.getElementById('tableBody');
-            const rows = tbody.querySelectorAll('tr');
+        // Update table when weights change with proper re-sorting
+        function updateTableWithSort() {
+            if (!dataTable) return;
             
+            // Update each row's weighted score using DataTables API
             citiesData.cities.forEach((city, index) => {
-                const row = rows[index];
                 const weightedScore = calculateWeightedScore(city);
-                const weightedCell = row.querySelector('.weighted-score');
-                weightedCell.textContent = weightedScore.toFixed(1);
-                weightedCell.style.background = getHeatmapColor(weightedScore);
+                
+                // Update the cell data so DataTables can sort properly
+                const cell = dataTable.cell(index, 1); // row index, column 1 (weighted score)
+                cell.data(weightedScore.toFixed(1));
+                
+                // Update the visual styling
+                const cellNode = cell.node();
+                if (cellNode) {
+                    $(cellNode).addClass('heatmap-cell weighted-score');
+                    $(cellNode).css('background', getHeatmapColor(weightedScore));
+                }
             });
             
-            // Re-sort the table
+            // Force re-sort by weighted score column and redraw
             dataTable.order([[1, 'desc']]).draw();
         }
         

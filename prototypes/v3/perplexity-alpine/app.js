@@ -9,31 +9,55 @@ let state = {
 
 // Import data from project data folder
 async function loadData() {
-  try {
-    const response = await fetch('/data/json/data.min.json');
-    if (!response.ok) {
-      // Try fallback path
-      const fallbackResponse = await fetch('/prototypes/v3/perplexity-alpine/data.js');
-      if (!fallbackResponse.ok) {
-        throw new Error(`Failed to load data from both paths. HTTP status: ${response.status}, ${fallbackResponse.status}`);
+  // Primary path (server root), then a relative fallback from this file's location
+  const candidates = [
+    '/data/v4-perplexity-city_data_export.json',
+    '../../../v4-perplexity-city_data_export.json'
+  ];
+
+  for (const p of candidates) {
+    try {
+      const resp = await fetch(p);
+      if (!resp.ok) {
+        console.debug('No response for', p, 'status', resp.status);
+        continue;
       }
-      return await fallbackResponse.json();
+
+      const contentType = (resp.headers.get('content-type') || '').toLowerCase();
+
+      // If it's JSON, parse and validate structure
+      if (contentType.includes('application/json') || p.endsWith('.json')) {
+        const json = await resp.json();
+        // Some exports wrap the payload under `data` key
+        const payload = json.data || json;
+        if (payload && payload.cities && payload.categories && payload.scores) {
+          return payload;
+        }
+        console.debug('JSON loaded but missing keys from', p);
+        continue;
+      }
+
+      // Otherwise treat as a JS module text and attempt to import
+      const moduleText = await resp.text();
+      const blob = new Blob([moduleText], { type: 'text/javascript' });
+      const url = URL.createObjectURL(blob);
+      try {
+        const mod = await import(url);
+        if (mod && mod.data) return mod.data;
+      } finally {
+        URL.revokeObjectURL(url);
+      }
+    } catch (err) {
+      console.debug('Error fetching', p, err);
+      continue;
     }
-    const moduleText = await response.text();
-    // Convert the module text to a module URL
-    const blob = new Blob([moduleText], { type: 'text/javascript' });
-    const url = URL.createObjectURL(blob);
-    const module = await import(url);
-    URL.revokeObjectURL(url);
-    
-    if (!module.data) throw new Error('Data object not found in module');
-    return module.data;
-  } catch (err) {
-    console.error('Failed to load data:', err);
-    showError('Failed to load data. Please ensure data files are generated.');
-    return null;
   }
-};
+
+  // If we get here nothing worked
+  showError('Failed to load data. Tried /data/v4-perplexity-city_data_export.json and ../../../v4-perplexity-city_data_export.json');
+  console.error('Data load failed for all candidate paths');
+  return null;
+}
 
 // City colors for bar view
 const cityColors = [
@@ -404,7 +428,10 @@ function showLoading() {
 showLoading();
 loadData().then(loadedData => {
   if (loadedData) {
-    window.data = loadedData;  // Make data globally available
+    data = loadedData;
+    window.data = loadedData;  // Make data globally available for debugging
+    // initialize selectedCategories with all categories present in the data
+    state.selectedCategories = new Set(Array.isArray(data.categories) ? data.categories : []);
     init();
   }
 });
