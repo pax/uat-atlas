@@ -643,19 +643,12 @@ h3 { font-size: var(--font-size-2xl); }
 <body>
     <div class="app-container">
         <!-- Sidebar with controls -->
+        
         <div class="sidebar">
+            <span style="background-color: whitesmoke; display: inline-block; border: 1px solid #DDD; padding: 2px 4px; border-radius: 3px;"><b>Perplexity</b> &rarr; <a href="../claude/">Claude</a></span>
             <h1>City Comparison</h1>
-            
-            <!-- Data Import (auto-load from same folder) -->
-            <div class="section">
-                <h3>Data Import</h3>
-                <div class="upload-area" id="dataStatus">
-                    <div style="font-size:13px; color:var(--color-text-secondary);">
-                        Automatically loading <strong>city_data_export.json</strong> from this folder...
-                    </div>
-                    <div class="file-name" id="fileName">Loading...</div>
-                </div>
-            </div>
+        
+            <!-- Data Import removed: the page auto-loads city_data_export.json from the same folder -->
             
             <!-- Profiles Section -->
             <div class="section">
@@ -929,7 +922,6 @@ print('Wrote city_data_export.json with', len(cities_out), 'cities')
 
         // Fetch default data file from same folder (city_data_export.json)
         async function fetchDefaultData() {
-            const statusEl = document.getElementById('fileName');
             const candidates = [
                 './city_data_export.json',
                 '/prototypes/v4/perplexity/city_data_export.json'
@@ -945,7 +937,7 @@ print('Wrote city_data_export.json with', len(cities_out), 'cities')
                     const json = await resp.json();
                     const payload = json.cities || json;
                     if (Array.isArray(payload) && payload.length > 0) {
-                        statusEl.textContent = `Loaded: ${url}`;
+                        console.info('Loaded data from', url);
                         processData(payload);
                         return;
                     } else {
@@ -957,10 +949,10 @@ print('Wrote city_data_export.json with', len(cities_out), 'cities')
                 }
             }
 
-            // If we get here, loading failed
+            // If we get here, loading failed — show message in main area
             const container = document.getElementById('tableContainer');
-            document.getElementById('dataStatus').innerHTML = `<div class="error-state"><div class="error-message">Failed to load <strong>city_data_export.json</strong>. Please ensure the file is present in the same folder as this page.</div></div>`;
-            container.innerHTML = `<div class="empty-state"><div class="empty-state-icon">⚠️</div><p>Unable to load data automatically. You can still load data manually by adding <code>city_data_export.json</code> to this folder.</p></div>`;
+            container.innerHTML = `<div class="empty-state"><div class="empty-state-icon">⚠️</div><p>Unable to load data automatically. Please add <code>city_data_export.json</code> to this folder.</p></div>`;
+            console.error('Failed to load city_data_export.json from candidate paths');
         }
 
         // Kick off auto-load on DOM ready
