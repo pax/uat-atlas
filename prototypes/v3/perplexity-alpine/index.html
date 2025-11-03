@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Romanian City Venue Comparison</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+      <h1>Romanian City Venue Comparison</h1>
+      <p class="subtitle">Compare cities across different venue categories</p>
+    </header>
+
+    <div class="main-layout">
+      <!-- Left Sidebar: Controls -->
+      <aside class="sidebar sidebar-left">
+        <div class="control-section">
+          <h3>Select Cities (1-3)</h3>
+          <div id="citySelector" class="city-selector"></div>
+        </div>
+
+        <div class="control-section">
+          <h3>View Mode</h3>
+          <div class="view-toggle">
+            <button id="heatmapBtn" class="btn btn--primary btn--sm view-btn active">Heatmap</button>
+            <button id="barBtn" class="btn btn--secondary btn--sm view-btn">Bar Chart</button>
+          </div>
+        </div>
+
+        <div class="control-section">
+          <div class="category-header">
+            <h3>Categories</h3>
+            <div class="category-actions">
+              <button id="selectAllBtn" class="btn btn--sm category-action-btn">Select All</button>
+              <button id="clearAllBtn" class="btn btn--sm category-action-btn">Clear All</button>
+            </div>
+          </div>
+          <div class="sort-controls">
+            <label for="sortSelect" class="form-label">Sort by:</label>
+            <select id="sortSelect" class="form-control">
+              <option value="name">Name</option>
+              <option value="avg">Average Score</option>
+            </select>
+          </div>
+          <div id="categoryFilter" class="category-filter"></div>
+        </div>
+      </aside>
+
+      <!-- Main Content Area -->
+      <main class="main-content">
+        <div id="comparisonView" class="comparison-view"></div>
+      </main>
+
+      <!-- Right Sidebar: Statistics -->
+      <aside class="sidebar sidebar-right">
+        <h3>Category Statistics</h3>
+        <p class="stats-description">Population-normalized values across all cities</p>
+        <div id="statsPanel" class="stats-panel"></div>
+      </aside>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CityProfiler - Framework Comparison</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #1f2937;
+            background: #f3f4f6;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .version-card {
+            background: white;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .version-card h2 {
+            color: #2563eb;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .badge {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-weight: normal;
+        }
+        
+        .badge-recommended {
+            background: #10b981;
+            color: white;
+        }
+        
+        .badge-warning {
+            background: #f59e0b;
+            color: white;
+        }
+        
+        .pros-cons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .pros, .cons {
+            padding: 1rem;
+            border-radius: 0.25rem;
+        }
+        
+        .pros {
+            background: #f0fdf4;
+            border-left: 3px solid #10b981;
+        }
+        
+        .cons {
+            background: #fef2f2;
+            border-left: 3px solid #ef4444;
+        }
+        
+        .pros h3 {
+            color: #10b981;
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .cons h3 {
+            color: #ef4444;
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        ul {
+            list-style-position: inside;
+            font-size: 0.875rem;
+        }
+        
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.5rem;
+            margin: 1rem 0;
+            padding: 1rem;
+            background: #f9fafb;
+            border-radius: 0.25rem;
+        }
+        
+        .metric {
+            text-align: center;
+        }
+        
+        .metric-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #2563eb;
+        }
+        
+        .metric-label {
+            font-size: 0.75rem;
+            color: #6b7280;
+        }
+        
+        .code-example {
+            background: #1f2937;
+            color: #e5e7eb;
+            padding: 1rem;
+            border-radius: 0.25rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.875rem;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background: #2563eb;
+            color: white;
+            text-decoration: none;
+            border-radius: 0.25rem;
+            transition: background 0.3s;
+            margin-right: 0.5rem;
+            margin-top: 1rem;
+        }
+        
+        .btn:hover {
+            background: #1d4ed8;
+        }
+        
+        .btn-outline {
+            background: white;
+            color: #2563eb;
+            border: 1px solid #2563eb;
+        }
+        
+        .btn-outline:hover {
+            background: #2563eb;
+            color: white;
+        }
+        
+        .comparison-table {
+            width: 100%;
+            background: white;
+            border-collapse: collapse;
+            margin: 2rem 0;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .comparison-table th {
+            background: #2563eb;
+            color: white;
+            padding: 1rem;
+            text-align: left;
+        }
+        
+        .comparison-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .comparison-table tr:hover {
+            background: #f9fafb;
+        }
+        
+        .check { color: #10b981; }
+        .cross { color: #ef4444; }
+        
+        .alert {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 1rem;
+            margin: 2rem 0;
+            border-radius: 0.25rem;
+        }
+        
+        .alert-title {
+            font-weight: bold;
+            color: #92400e;
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>CityProfiler Framework Comparison</h1>
+        <p>See all three implementations side-by-side</p>
+    </div>
+
+    <div class="container">
+        <div class="alert">
+            <div class="alert-title">⚠️ Important Note About HTMX</div>
+            <p>The HTMX version requires a PHP server running. It cannot work as a static site. This is the fundamental limitation that makes it unsuitable for your GitHub Pages/Netlify hosting requirement.</p>
+        </div>
+
+        <div class="comparison-grid">
+            <!-- Vanilla JavaScript -->
+            <div class="version-card">
+                <h2>Vanilla JavaScript</h2>
+                
+                <div class="metrics">
+                    <div class="metric">
+                        <div class="metric-value">400</div>
+                        <div class="metric-label">Lines of Code</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-value">0KB</div>
+                        <div class="metric-label">Dependencies</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-value">✅</div>
+                        <div class="metric-label">Static Host</div>
+                    </div>
+                </div>
+
+                <div class="pros-cons">
+                    <div class="pros">
+                        <h3>✓ Pros</h3>
+                        <ul>
+                            <li>No dependencies</li>
+                            <li>Full control</li>
+                            <li>Works everywhere</li>
+                            <li>Smallest bundle</li>
+                        </ul>
+                    </div>
+                    <div class="cons">
+                        <h3>✗ Cons</h3>
+                        <ul>
+                            <li>Verbose code</li>
+                            <li>Manual DOM updates</li>
+                            <li>No reactivity</li>
+                            <li>More bugs likely</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="code-example">// Vanilla JS Search<br>
+function filterCities(term) {<br>
+&nbsp;&nbsp;const cards = document.querySelectorAll('.city-card');<br>
+&nbsp;&nbsp;cards.forEach(card => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const name = card.querySelector('h3').textContent;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;card.style.display = name.includes(term) ? 'block' : 'none';<br>
+&nbsp;&nbsp;});<br>
+}</div>
+
+                <a href="index.html" class="btn">View Demo</a>
+                <a href="app.js" class="btn btn-outline">View Code</a>
+            </div>
+
+            <!-- Alpine.js -->
+            <div class="version-card">
+                <h2>
+                    Alpine.js
+                    <span class="badge badge-recommended">Recommended</span>
+                </h2>
+                
+                <div class="metrics">
+                    <div class="metric">
+                        <div class="metric-value">250</div>
+                        <div class="metric-label">Lines of Code</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-value">15KB</div>
+                        <div class="metric-label">Alpine.js</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-value">✅</div>
+                        <div class="metric-label">Static Host</div>
+                    </div>
+                </div>
+
+                <div class="pros-cons">
+                    <div class="pros">
+                        <h3>✓ Pros</h3>
+                        <ul>
+                            <li>Declarative syntax</li>
+                            <li>Reactive data</li>
+                            <li>No build step</li>
+                            <li>Clean code</li>
+                        </ul>
+                    </div>
+                    <div class="cons">
+                        <h3>✗ Cons</h3>
+                        <ul>
+                            <li>15KB dependency</li>
+                            <li>Learning curve</li>
+                            <li>Less control</li>
+                            <li>Alpine-specific</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="code-example">// Alpine.js Search (in HTML)<br>
+&lt;input x-model="search"&gt;<br>
+&lt;div x-for="city in cities.filter(c => <br>
+&nbsp;&nbsp;c.name.includes(search))"&gt;<br>
+&nbsp;&nbsp;&lt;!-- Auto-updates! --&gt;<br>
+&lt;/div&gt;</div>
+
+                <a href="index-alpine.html" class="btn">View Demo</a>
+                <a href="index-alpine.html" class="btn btn-outline">View Code</a>
+            </div>
+
+            <!-- HTMX -->
+            <div class="version-card">
+                <h2>
+                    HTMX
+                    <span class="badge badge-warning">Server Required</span>
+                </h2>
+                
+                <div class="metrics">
+                    <div class="metric">
+                        <div class="metric-value">500+</div>
+                        <div class="metric-label">Lines (PHP+HTML)</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-value">14KB</div>
+                        <div class="metric-label">HTMX.js</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-value">❌</div>
+                        <div class="metric-label">Static Host</div>
+                    </div>
+                </div>
+
+                <div class="pros-cons">
+                    <div class="pros">
+                        <h3>✓ Pros</h3>
+                        <ul>
+                            <li>Server-side logic</li>
+                            <li>Good for CRUD</li>
+                            <li>Progressive enhance</li>
+                            <li>SEO friendly</li>
+                        </ul>
+                    </div>
+                    <div class="cons">
+                        <h3>✗ Cons</h3>
+                        <ul>
+                            <li>Needs server!</li>
+                            <li>Network latency</li>
+                            <li>Still needs JS</li>
+                            <li>Complex deploy</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="code-example">// HTMX Search (needs backend)<br>
+&lt;input hx-get="/search"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;hx-trigger="keyup changed delay:500ms"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;hx-target="#results"&gt;<br>
+// PHP: Generate HTML for every request!</div>
+
+                <a href="index-htmx.html" class="btn">View Demo*</a>
+                <a href="htmx-backend.php" class="btn btn-outline">View Backend</a>
+                <p style="font-size: 0.875rem; color: #6b7280; margin-top: 0.5rem;">
+                    * Requires PHP server running
+                </p>
+            </div>
+        </div>
+
+        <h2 style="margin-top: 3rem;">Feature Comparison</h2>
+        
+        <table class="comparison-table">
+            <thead>
+                <tr>
+                    <th>Feature</th>
+                    <th>Vanilla JS</th>
+                    <th>Alpine.js</th>
+                    <th>HTMX</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Static Hosting (GitHub Pages)</strong></td>
+                    <td><span class="check">✅ Yes</span></td>
+                    <td><span class="check">✅ Yes</span></td>
+                    <td><span class="cross">❌ No</span></td>
+                </tr>
+                <tr>
+                    <td><strong>Real-time Search</strong></td>
+                    <td><span class="check">✅ Instant</span></td>
+                    <td><span class="check">✅ Instant</span></td>
+                    <td><span class="cross">❌ Network lag</span></td>
+                </tr>
+                <tr>
+                    <td><strong>Interactive Maps</strong></td>
+                    <td><span class="check">✅ Full control</span></td>
+                    <td><span class="check">✅ Works great</span></td>
+                    <td><span class="cross">❌ Needs JS anyway</span></td>
+                </tr>
+                <tr>
+                    <td><strong>Code Maintainability</strong></td>
+                    <td>⭐⭐⭐</td>
+                    <td>⭐⭐⭐⭐⭐</td>
+                    <td>⭐⭐</td>
+                </tr>
+                <tr>
+                    <td><strong>Performance</strong></td>
+                    <td>⭐⭐⭐⭐⭐</td>
+                    <td>⭐⭐⭐⭐⭐</td>
+                    <td>⭐⭐</td>
+                </tr>
+                <tr>
+                    <td><strong>Deployment Cost</strong></td>
+                    <td><span class="check">Free</span></td>
+                    <td><span class="check">Free</span></td>
+                    <td><span class="cross">$5-20/month</span></td>
+                </tr>
+                <tr>
+                    <td><strong>Learning Curve</strong></td>
+                    <td>Low (just JS)</td>
+                    <td>Low-Medium</td>
+                    <td>Medium</td>
+                </tr>
+                <tr>
+                    <td><strong>Offline Capability</strong></td>
+                    <td><span class="check">✅ Yes</span></td>
+                    <td><span class="check">✅ Yes</span></td>
+                    <td><span class="cross">❌ No</span></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2 style="margin-top: 3rem;">Quick Decision Guide</h2>
+        
+        <div style="background: white; padding: 2rem; border-radius: 0.5rem; margin-top: 1rem;">
+            <h3 style="color: #10b981; margin-bottom: 1rem;">✅ Choose Alpine.js if you want:</h3>
+            <ul style="margin-left: 2rem; line-height: 2;">
+                <li>Clean, maintainable code</li>
+                <li>Reactive data binding</li>
+                <li>Static hosting option</li>
+                <li>Best developer experience</li>
+            </ul>
+
+            <h3 style="color: #f59e0b; margin-top: 2rem; margin-bottom: 1rem;">⚠️ Avoid HTMX because:</h3>
+            <ul style="margin-left: 2rem; line-height: 2;">
+                <li>Kills your static hosting requirement</li>
+                <li>Adds network latency to every interaction</li>
+                <li>Still needs JavaScript for maps/charts</li>
+                <li>More complex architecture for no benefit</li>
+            </ul>
+        </div>
+
+        <div style="text-align: center; margin-top: 3rem; padding: 2rem; background: linear-gradient(135deg, #10b981, #2563eb); border-radius: 0.5rem; color: white;">
+            <h2 style="margin-bottom: 1rem;">🎯 Final Recommendation</h2>
+            <p style="font-size: 1.25rem; margin-bottom: 1.5rem;">
+                <strong>Alpine.js</strong> is the perfect balance for your City Profiler project
+            </p>
+            <a href="index-alpine.html" class="btn" style="background: white; color: #2563eb;">
+                View Alpine.js Version
+            </a>
+        </div>
+    </div>
+</body>
+</html>

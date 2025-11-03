@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CityProfiler.ro - Alpine.js Version</title>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        [x-cloak] { display: none !important; }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #10b981;
+            --accent: #f59e0b;
+            --dark: #1f2937;
+            --gray: #6b7280;
+            --light: #f3f4f6;
+            --white: #ffffff;
+            --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: var(--dark);
+            background: var(--light);
+        }
+        
+        .navbar {
+            background: var(--white);
+            box-shadow: var(--shadow);
+            padding: 1rem 2rem;
+        }
+        
+        .nav-container {
+            max-width: 1280px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .hero {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            padding: 3rem 2rem;
+            text-align: center;
+            color: var(--white);
+        }
+        
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .criteria-pills {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin: 1rem 0;
+        }
+        
+        .pill {
+            padding: 0.5rem 1rem;
+            border: 2px solid var(--light);
+            background: var(--white);
+            border-radius: 2rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .pill.active {
+            background: var(--primary);
+            color: var(--white);
+            border-color: var(--primary);
+        }
+        
+        .cities-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .city-card {
+            background: var(--white);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s;
+            cursor: pointer;
+        }
+        
+        .city-card:hover {
+            transform: translateY(-2px);
+        }
+        
+        .score-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--light);
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 0.5rem 0;
+        }
+        
+        .score-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            transition: width 0.3s;
+        }
+        
+        .search-box {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--light);
+            border-radius: 0.25rem;
+            width: 300px;
+            margin: 1rem 0;
+        }
+        
+        .table-view {
+            overflow-x: auto;
+            margin: 2rem 0;
+        }
+        
+        table {
+            width: 100%;
+            background: var(--white);
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+            border: 1px solid var(--light);
+        }
+        
+        th {
+            background: var(--primary);
+            color: var(--white);
+        }
+        
+        .modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        
+        .modal-content {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 0.5rem;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            background: var(--primary);
+            color: var(--white);
+            border-radius: 0.25rem;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .btn:hover {
+            background: var(--primary-dark);
+        }
+        
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+        
+        .stat-card {
+            background: var(--light);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            text-align: center;
+        }
+        
+        .criteria-builder {
+            margin: 2rem 0;
+        }
+        
+        .slider-group {
+            margin: 1rem 0;
+        }
+        
+        .slider-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+        
+        input[type="range"] {
+            width: 100%;
+        }
+        
+        #map { height: 500px; margin: 2rem 0; }
+    </style>
+</head>
+<body x-data="cityProfiler" x-init="init()">
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <h1 style="color: var(--primary);">CityProfiler.ro</h1>
+            <div>
+                <span x-text="`${selectedCities.length} cities selected`"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero">
+        <h2>Find your Perfect City in Romania</h2>
+        <p>Compare cities based on amenities, culture, healthcare, and lifestyle</p>
+    </section>
+
+    <div class="container">
+        <!-- Loading State -->
+        <div x-show="loading" x-cloak>
+            <p>Loading city data...</p>
+        </div>
+
+        <!-- Main Content -->
+        <div x-show="!loading" x-cloak>
+            <!-- Criteria Selection -->
+            <div class="criteria-pills">
+                <template x-for="(preset, key) in criteriaPresets" :key="key">
+                    <button 
+                        class="pill"
+                        :class="{ active: currentCriteria === key }"
+                        @click="changeCriteria(key)"
+                        x-text="preset.name">
+                    </button>
+                </template>
+                <button 
+                    class="pill"
+                    :class="{ active: currentCriteria === 'custom' }"
+                    @click="showCriteriaBuilder = true">
+                    Custom →
+                </button>
+            </div>
+
+            <!-- Search and Filter -->
+            <div>
+                <input 
+                    type="text" 
+                    class="search-box"
+                    placeholder="Search cities..."
+                    x-model="searchTerm"
+                    @input="filterCities()">
+                
+                <select @change="sortBy = $event.target.value; sortCities()">
+                    <option value="score">Sort by Score</option>
+                    <option value="population">Sort by Population</option>
+                    <option value="name">Sort by Name</option>
+                </select>
+            </div>
+
+            <!-- View Toggle -->
+            <div style="margin: 1rem 0;">
+                <button class="btn" @click="currentView = 'grid'">Grid View</button>
+                <button class="btn" @click="currentView = 'table'">Table View</button>
+                <button class="btn" @click="currentView = 'map'">Map View</button>
+                <button class="btn" @click="showComparison = true" x-show="selectedCities.length >= 2">
+                    Compare Selected
+                </button>
+            </div>
+
+            <!-- Grid View -->
+            <div x-show="currentView === 'grid'" class="cities-grid">
+                <template x-for="city in filteredCities" :key="city.id">
+                    <div class="city-card" @click="showCityDetails(city)">
+                        <h3 x-text="city.name"></h3>
+                        <p x-text="`${city.county} County`"></p>
+                        <p x-text="`Population: ${(city.pop || 0).toLocaleString()}`"></p>
+                        <div class="score-bar">
+                            <div class="score-fill" :style="`width: ${city.relativeScore}%`"></div>
+                        </div>
+                        <p x-text="`Score: ${city.relativeScore}/100`"></p>
+                        <label @click.stop>
+                            <input 
+                                type="checkbox" 
+                                :checked="selectedCities.includes(city.id)"
+                                @change="toggleSelection(city.id)">
+                            Add to comparison
+                        </label>
+                    </div>
+                </template>
+            </div>
+
+            <!-- Table View -->
+            <div x-show="currentView === 'table'" class="table-view">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Select</th>
+                            <th>City</th>
+                            <th>County</th>
+                            <th>Population</th>
+                            <th>Score</th>
+                            <th>Hospitals</th>
+                            <th>Schools</th>
+                            <th>Restaurants</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <template x-for="city in filteredCities" :key="city.id">
+                            <tr>
+                                <td>
+                                    <input 
+                                        type="checkbox"
+                                        :checked="selectedCities.includes(city.id)"
+                                        @change="toggleSelection(city.id)">
+                                </td>
+                                <td x-text="city.name"></td>
+                                <td x-text="city.county"></td>
+                                <td x-text="(city.pop || 0).toLocaleString()"></td>
+                                <td x-text="`${city.relativeScore}/100`"></td>
+                                <td x-text="stats[city.id]?.['Hospitals'] || 0"></td>
+                                <td x-text="stats[city.id]?.['Schools'] || 0"></td>
+                                <td x-text="stats[city.id]?.['Restaurants'] || 0"></td>
+                            </tr>
+                        </template>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Map View -->
+            <div x-show="currentView === 'map'">
+                <div id="map"></div>
+            </div>
+        </div>
+
+        <!-- City Details Modal -->
+        <div x-show="showModal" @click.away="showModal = false" class="modal" x-cloak>
+            <div class="modal-content">
+                <h2 x-text="selectedCity?.name"></h2>
+                <p x-text="`${selectedCity?.county} County`"></p>
+                <p x-text="`Population: ${selectedCity?.pop?.toLocaleString()}`"></p>
+                
+                <div class="comparison-grid">
+                    <template x-for="(value, category) in (stats[selectedCity?.id] || {})" :key="category">
+                        <div class="stat-card">
+                            <strong x-text="category"></strong>
+                            <div x-text="value"></div>
+                            <small x-text="`${Math.round(value / selectedCity?.pop * 100000)} per 100k`"></small>
+                        </div>
+                    </template>
+                </div>
+                
+                <button class="btn" @click="showModal = false">Close</button>
+            </div>
+        </div>
+
+        <!-- Comparison Modal -->
+        <div x-show="showComparison" @click.away="showComparison = false" class="modal" x-cloak>
+            <div class="modal-content" style="max-width: 800px;">
+                <h2>City Comparison</h2>
+                <div class="comparison-grid">
+                    <template x-for="cityId in selectedCities" :key="cityId">
+                        <div>
+                            <h3 x-text="cities.find(c => c.id === cityId)?.name"></h3>
+                            <div class="stat-card" style="margin: 1rem 0;">
+                                <template x-for="category in topCategories" :key="category">
+                                    <div>
+                                        <span x-text="category"></span>: 
+                                        <strong x-text="stats[cityId]?.[category] || 0"></strong>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+                <button class="btn" @click="showComparison = false">Close</button>
+            </div>
+        </div>
+
+        <!-- Criteria Builder Modal -->
+        <div x-show="showCriteriaBuilder" @click.away="showCriteriaBuilder = false" class="modal" x-cloak>
+            <div class="modal-content">
+                <h2>Custom Criteria Builder</h2>
+                <div class="criteria-builder">
+                    <template x-for="category in categories" :key="category">
+                        <div class="slider-group">
+                            <div class="slider-label">
+                                <span x-text="category"></span>
+                                <span x-text="`${customWeights[category] || 0}%`"></span>
+                            </div>
+                            <input 
+                                type="range" 
+                                min="0" 
+                                max="100"
+                                :value="customWeights[category] || 0"
+                                @input="customWeights[category] = parseInt($event.target.value)">
+                        </div>
+                    </template>
+                </div>
+                <button class="btn" @click="applyCustomCriteria()">Apply Criteria</button>
+                <button class="btn" @click="showCriteriaBuilder = false">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('cityProfiler', () => ({
+                // State
+                loading: true,
+                cities: [],
+                categories: [],
+                stats: {},
+                filteredCities: [],
+                selectedCities: [],
+                selectedCity: null,
+                searchTerm: '',
+                sortBy: 'score',
+                currentView: 'grid',
+                currentCriteria: 'overall',
+                customWeights: {},
+                
+                // UI State
+                showModal: false,
+                showComparison: false,
+                showCriteriaBuilder: false,
+                
+                // Map
+                map: null,
+                markers: [],
+                
+                // Top categories for display
+                topCategories: ['Hospitals', 'Pharmacies', 'Restaurants', 'Schools', 'Cinema'],
+                
+                // Criteria presets
+                criteriaPresets: {
+                    overall: { name: 'Overall' },
+                    family: { name: 'Family Friendly' },
+                    nightlife: { name: 'Night Life' },
+                    retirement: { name: 'Retirement' },
+                    culture: { name: 'Culture' },
+                    health: { name: 'Health & Wellness' }
+                },
+                
+                // Methods
+                async init() {
+                    try {
+                        const response = await fetch('data/data.min.json');
+                        const data = await response.json();
+                        
+                        this.cities = data.cities;
+                        this.categories = data.categories;
+                        this.stats = data.stats;
+                        
+                        this.calculateScores();
+                        this.filterCities();
+                        this.loading = false;
+                        
+                        // Initialize map when switching to map view
+                        this.$watch('currentView', (value) => {
+                            if (value === 'map' && !this.map) {
+                                this.$nextTick(() => this.initMap());
+                            }
+                        });
+                    } catch (error) {
+                        console.error('Error loading data:', error);
+                        this.loading = false;
+                    }
+                },
+                
+                calculateScores() {
+                    // Simple equal weight scoring for demo
+                    this.cities.forEach(city => {
+                        const cityStats = this.stats[city.id] || {};
+                        let total = 0;
+                        let count = 0;
+                        
+                        Object.entries(cityStats).forEach(([category, value]) => {
+                            if (city.pop) {
+                                total += (value / city.pop) * 100000;
+                                count++;
+                            }
+                        });
+                        
+                        city.score = count > 0 ? Math.round(total / count) : 0;
+                    });
+                    
+                    // Calculate relative scores
+                    const maxScore = Math.max(...this.cities.map(c => c.score));
+                    this.cities.forEach(city => {
+                        city.relativeScore = maxScore > 0 ? Math.round((city.score / maxScore) * 100) : 0;
+                    });
+                },
+                
+                filterCities() {
+                    let filtered = [...this.cities];
+                    
+                    if (this.searchTerm) {
+                        const term = this.searchTerm.toLowerCase();
+                        filtered = filtered.filter(city => 
+                            city.name.toLowerCase().includes(term) ||
+                            city.county.toLowerCase().includes(term)
+                        );
+                    }
+                    
+                    this.filteredCities = filtered;
+                    this.sortCities();
+                },
+                
+                sortCities() {
+                    if (this.sortBy === 'score') {
+                        this.filteredCities.sort((a, b) => b.relativeScore - a.relativeScore);
+                    } else if (this.sortBy === 'population') {
+                        this.filteredCities.sort((a, b) => (b.pop || 0) - (a.pop || 0));
+                    } else if (this.sortBy === 'name') {
+                        this.filteredCities.sort((a, b) => a.name.localeCompare(b.name));
+                    }
+                },
+                
+                changeCriteria(criteria) {
+                    this.currentCriteria = criteria;
+                    // In real app, would recalculate scores based on criteria
+                    this.calculateScores();
+                    this.filterCities();
+                },
+                
+                toggleSelection(cityId) {
+                    const index = this.selectedCities.indexOf(cityId);
+                    if (index > -1) {
+                        this.selectedCities.splice(index, 1);
+                    } else if (this.selectedCities.length < 3) {
+                        this.selectedCities.push(cityId);
+                    } else {
+                        alert('You can select up to 3 cities for comparison');
+                    }
+                },
+                
+                showCityDetails(city) {
+                    this.selectedCity = city;
+                    this.showModal = true;
+                },
+                
+                applyCustomCriteria() {
+                    this.currentCriteria = 'custom';
+                    // Recalculate scores with custom weights
+                    this.calculateScores();
+                    this.filterCities();
+                    this.showCriteriaBuilder = false;
+                },
+                
+                initMap() {
+                    this.map = L.map('map').setView([45.9432, 24.9668], 7);
+                    
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                        attribution: '© OpenStreetMap contributors'
+                    }).addTo(this.map);
+                    
+                    // Add markers for cities with coordinates
+                    this.cities.forEach(city => {
+                        if (city.coords) {
+                            const marker = L.circleMarker(city.coords, {
+                                radius: 8 + (city.relativeScore / 10),
+                                fillColor: this.getScoreColor(city.relativeScore),
+                                color: '#fff',
+                                weight: 2,
+                                fillOpacity: 0.8
+                            }).addTo(this.map);
+                            
+                            marker.bindPopup(`
+                                <strong>${city.name}</strong><br>
+                                Score: ${city.relativeScore}/100<br>
+                                Population: ${(city.pop || 0).toLocaleString()}
+                            `);
+                        }
+                    });
+                },
+                
+                getScoreColor(score) {
+                    if (score >= 80) return '#22c55e';
+                    if (score >= 60) return '#3b82f6';
+                    if (score >= 40) return '#f59e0b';
+                    return '#ef4444';
+                }
+            }));
+        });
+    </script>
+</body>
+</html>

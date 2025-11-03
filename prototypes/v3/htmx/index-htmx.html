@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CityProfiler.ro - HTMX Version (Server Required)</title>
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <script src="https://unpkg.com/htmx.org/dist/ext/json-enc.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #10b981;
+            --accent: #f59e0b;
+            --dark: #1f2937;
+            --gray: #6b7280;
+            --light: #f3f4f6;
+            --white: #ffffff;
+            --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: var(--dark);
+            background: var(--light);
+        }
+        
+        .navbar {
+            background: var(--white);
+            box-shadow: var(--shadow);
+            padding: 1rem 2rem;
+        }
+        
+        .nav-container {
+            max-width: 1280px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .hero {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            padding: 3rem 2rem;
+            text-align: center;
+            color: var(--white);
+        }
+        
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .criteria-pills {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin: 1rem 0;
+        }
+        
+        .pill {
+            padding: 0.5rem 1rem;
+            border: 2px solid var(--light);
+            background: var(--white);
+            border-radius: 2rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .pill:hover {
+            border-color: var(--primary);
+        }
+        
+        .pill.active {
+            background: var(--primary);
+            color: var(--white);
+            border-color: var(--primary);
+        }
+        
+        .cities-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .city-card {
+            background: var(--white);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s;
+            cursor: pointer;
+        }
+        
+        .city-card:hover {
+            transform: translateY(-2px);
+        }
+        
+        .score-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--light);
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 0.5rem 0;
+        }
+        
+        .score-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            transition: width 0.3s;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 1rem;
+            margin: 1rem 0;
+            flex-wrap: wrap;
+        }
+        
+        .search-box {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--light);
+            border-radius: 0.25rem;
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            background: var(--primary);
+            color: var(--white);
+            border-radius: 0.25rem;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .btn:hover {
+            background: var(--primary-dark);
+        }
+        
+        .btn-outline {
+            background: var(--white);
+            color: var(--primary);
+            border: 1px solid var(--primary);
+        }
+        
+        .btn-outline:hover {
+            background: var(--primary);
+            color: var(--white);
+        }
+        
+        table {
+            width: 100%;
+            background: var(--white);
+            border-collapse: collapse;
+            margin: 2rem 0;
+        }
+        
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+            border: 1px solid var(--light);
+        }
+        
+        th {
+            background: var(--primary);
+            color: var(--white);
+        }
+        
+        /* HTMX Loading States */
+        .htmx-request .htmx-indicator {
+            display: inline-block;
+        }
+        
+        .htmx-indicator {
+            display: none;
+            color: var(--primary);
+        }
+        
+        .htmx-settling {
+            opacity: 0.5;
+        }
+        
+        .htmx-swapping {
+            opacity: 0.5;
+            transition: opacity 200ms ease-in;
+        }
+        
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        
+        .modal.show {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 0.5rem;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 1.5rem;
+            cursor: pointer;
+            background: none;
+            border: none;
+            color: var(--gray);
+        }
+        
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .stat-card {
+            background: var(--light);
+            padding: 1rem;
+            border-radius: 0.25rem;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+        
+        .loading-spinner {
+            border: 3px solid var(--light);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 2rem auto;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        #map { 
+            height: 500px; 
+            margin: 2rem 0;
+            background: var(--light);
+        }
+        
+        .comparison-select {
+            display: flex;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .comparison-select select {
+            flex: 1;
+            padding: 0.5rem;
+            border: 1px solid var(--light);
+            border-radius: 0.25rem;
+        }
+        
+        .view-tabs {
+            display: flex;
+            gap: 0.5rem;
+            border-bottom: 2px solid var(--light);
+            margin: 1rem 0;
+        }
+        
+        .tab {
+            padding: 0.75rem 1.5rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--gray);
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+            transition: all 0.3s;
+        }
+        
+        .tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--gray);
+        }
+        
+        .checkbox-group {
+            margin: 0.5rem 0;
+        }
+        
+        .checkbox-group label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <h1 style="color: var(--primary);">CityProfiler.ro - HTMX</h1>
+            <div>
+                <span class="htmx-indicator">⟳ Loading...</span>
+                <span id="selection-count"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero">
+        <h2>Find your Perfect City in Romania</h2>
+        <p>Compare cities based on amenities, culture, healthcare, and lifestyle</p>
+        <p style="background: rgba(255,255,255,0.2); padding: 0.5rem; margin-top: 1rem; border-radius: 0.25rem;">
+            ⚠️ HTMX Version - Requires PHP Server Running
+        </p>
+    </section>
+
+    <div class="container">
+        <!-- Initial content loads from server -->
+        <div id="main-content"
+             hx-get="htmx-backend.php?action=init" 
+             hx-trigger="load"
+             hx-indicator=".htmx-indicator">
+            <div class="loading-spinner"></div>
+            <p style="text-align: center;">Loading application...</p>
+        </div>
+    </div>
+
+    <!-- Modal Container -->
+    <div id="modal-container"></div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        // HTMX requires more JavaScript than you'd think for complex interactions
+        
+        // Handle modal display
+        htmx.on('htmx:afterSwap', (evt) => {
+            if (evt.detail.target.id === 'modal-container') {
+                const modal = evt.detail.target.querySelector('.modal');
+                if (modal) {
+                    modal.classList.add('show');
+                }
+            }
+        });
+        
+        // Close modal
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('modal-close') || e.target.classList.contains('modal')) {
+                const modal = document.querySelector('.modal');
+                if (modal) {
+                    modal.classList.remove('show');
+                    setTimeout(() => {
+                        document.getElementById('modal-container').innerHTML = '';
+                    }, 300);
+                }
+            }
+        });
+        
+        // Initialize map when map view is loaded
+        htmx.on('htmx:afterSettle', (evt) => {
+            const mapEl = document.getElementById('map');
+            if (mapEl && !mapEl._leaflet_id) {
+                // Map needs to be initialized with JavaScript anyway
+                initializeMap();
+            }
+        });
+        
+        function initializeMap() {
+            // HTMX can't handle Leaflet maps - need JS
+            const map = L.map('map').setView([45.9432, 24.9668], 7);
+            
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(map);
+            
+            // Fetch city data and add markers
+            fetch('htmx-backend.php?action=cities_json')
+                .then(r => r.json())
+                .then(cities => {
+                    cities.forEach(city => {
+                        if (city.coords) {
+                            L.circleMarker(city.coords, {
+                                radius: 8 + (city.score / 10),
+                                fillColor: getScoreColor(city.score),
+                                color: '#fff',
+                                weight: 2,
+                                fillOpacity: 0.8
+                            })
+                            .bindPopup(`
+                                <strong>${city.name}</strong><br>
+                                Score: ${city.score}/100<br>
+                                <button class="btn btn-sm" 
+                                        hx-get="htmx-backend.php?action=city_details&id=${city.id}"
+                                        hx-target="#modal-container">
+                                    View Details
+                                </button>
+                            `)
+                            .addTo(map);
+                        }
+                    });
+                    
+                    // Re-process HTMX on dynamic content
+                    htmx.process(document.body);
+                });
+        }
+        
+        function getScoreColor(score) {
+            if (score >= 80) return '#22c55e';
+            if (score >= 60) return '#3b82f6';
+            if (score >= 40) return '#f59e0b';
+            return '#ef4444';
+        }
+        
+        // Handle real-time search (HTMX can't do this efficiently)
+        let searchTimeout;
+        function handleSearch(input) {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                htmx.trigger(input, 'search');
+            }, 300);
+        }
+        
+        // Update selection count
+        htmx.on('htmx:afterSwap', () => {
+            const checkboxes = document.querySelectorAll('input[name="compare[]"]:checked');
+            document.getElementById('selection-count').textContent = 
+                checkboxes.length > 0 ? `${checkboxes.length} selected` : '';
+        });
+    </script>
+</body>
+</html>
