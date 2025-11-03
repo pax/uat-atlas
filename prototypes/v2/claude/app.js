@@ -104,7 +104,7 @@ class CityProfiler {
     async loadData() {
         // Load data from the repository JSON output. Use absolute repo path so prototype
         // served from project root can locate the file at /data/json/data.min.json
-        const response = await fetch('../../data/json/data.min.json');
+        const response = await fetch('../../../data/json/data.min.json');
         if (!response.ok) throw new Error('Failed to load data');
         
         this.data = await response.json();

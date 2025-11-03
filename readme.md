@@ -18,21 +18,21 @@ use data fetched with [pax/gis-places-osint](https://github.com/pax/gis-places-o
 create city profiles, maps 
 
 ## Roadmap
-- [x] mpv ui
+- [x] MPV UI
+    - [x] figure out stack
+    - [x] read data from db/api?
+    - [x] how to calculate scores?-
+    - [x] norm to population
+    - [ ] use <prototypes/claude/> - use views (scores) instead of absolute counts. Disply normed to pop.
 - [ ] split categories by parent categories / grouping
-- [ ] read data from db/api?
-- [ ] norm to population
 - [ ] icons for categories
-- [ ] how to calculate scores?
+
 - [ ] add INS data
-
-- figure out stack
-
 - [ ] multi lang
 - [ ] text to sql - hugginface trained model
 - [ ] Reddit threads - vreau să mă mut în <City>
 
-see <prototypes/claude/> and <prototypes/perplexity/>
+see <prototypes/claude/> (php api) and <prototypes/perplexity/> (exported static jsons)
 
 see [reference/brainstorming/]
 
