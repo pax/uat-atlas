@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>City Comparison Table</title>
+    
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+    
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        
+        .container {
+            max-width: 1800px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            margin: 0 0 30px 0;
+            color: #333;
+        }
+        
+        .controls {
+            display: grid;
+            grid-template-columns: 1fr 250px;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .weights-section {
+            max-height: 600px;
+            overflow-y: auto;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 20px;
+        }
+        
+        .profiles-section {
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 20px;
+        }
+        
+        .profiles-section h3 {
+            margin: 0 0 15px 0;
+            color: #333;
+        }
+        
+        .profile-btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 10px;
+            border: 2px solid #4CAF50;
+            background: white;
+            color: #4CAF50;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        
+        .profile-btn:hover {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .profile-btn.active {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .weight-control {
+            margin-bottom: 15px;
+        }
+        
+        .weight-control label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 13px;
+            color: #555;
+        }
+        
+        .weight-input-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .weight-control input[type="range"] {
+            flex: 1;
+            height: 6px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: #ddd;
+            border-radius: 3px;
+            outline: none;
+        }
+        
+        .weight-control input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            background: #4CAF50;
+            cursor: pointer;
+            border-radius: 50%;
+        }
+        
+        .weight-control input[type="range"]::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
+            background: #4CAF50;
+            cursor: pointer;
+            border-radius: 50%;
+            border: none;
+        }
+        
+        .weight-value {
+            min-width: 45px;
+            text-align: right;
+            font-weight: 500;
+            color: #333;
+        }
+        
+        table.dataTable {
+            width: 100% !important;
+            border-collapse: collapse;
+        }
+        
+        table.dataTable thead th {
+            background: #f8f8f8;
+            padding: 12px 8px;
+            font-size: 12px;
+            white-space: nowrap;
+            border-bottom: 2px solid #ddd;
+        }
+        
+        table.dataTable tbody td {
+            padding: 8px;
+            font-size: 12px;
+            text-align: center;
+        }
+        
+        .city-name {
+            text-align: left !important;
+            font-weight: 500;
+            min-width: 150px;
+        }
+        
+        .heatmap-cell {
+            padding: 8px;
+            font-weight: 500;
+            border-radius: 3px;
+            min-width: 50px;
+        }
+        
+        .weighted-score {
+            font-size: 16px !important;
+            font-weight: 700 !important;
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .social-links a {
+            color: #4CAF50;
+            text-decoration: none;
+            font-size: 11px;
+        }
+        
+        .social-links a:hover {
+            text-decoration: underline;
+        }
+        
+        .dataTables_wrapper {
+            overflow-x: auto;
+        }
+        
+        .reset-btn {
+            padding: 8px 16px;
+            background: #ff5722;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            margin-bottom: 15px;
+        }
+        
+        .reset-btn:hover {
+            background: #e64a19;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>City Comparison Table</h1>
+        
+        <div class="controls">
+            <div class="weights-section">
+                <h3>Weighted Score Settings</h3>
+                <button class="reset-btn" onclick="resetWeights()">Reset All Weights</button>
+                <div id="weight-controls"></div>
+            </div>
+            
+            <div class="profiles-section">
+                <h3>Saved Profiles</h3>
+                <button class="profile-btn" data-profile="kids">Kids Friendly</button>
+                <button class="profile-btn" data-profile="nightlife">Nightlife</button>
+                <button class="profile-btn" data-profile="retirement">Retirement</button>
+                <button class="profile-btn" data-profile="culture">Culture</button>
+                <button class="profile-btn" data-profile="balanced">Balanced</button>
+            </div>
+        </div>
+        
+        <table id="cityTable" class="display" style="width:100%">
+            <thead>
+                <tr id="tableHeader"></tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+        </table>
+    </div>
+    
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    
+    <script>
+        let citiesData = null;
+        let dataTable = null;
+        let weights = {};
+        
+        // Profile definitions (weights as percentages that sum to 100)
+        const profiles = {
+            kids: {
+                'Schools': 15,
+                'Hospitals': 12,
+                'Pharmacies': 10,
+                'Dentist': 8,
+                'dental_clinic': 7,
+                'Dentist + Clinic': 7,
+                'swimming_pool': 8,
+                'sports': 8,
+                'University': 5,
+                'Gyms Fitness': 5,
+                'Fast Food': 5,
+                'veterinary_animals': 5,
+                'Bus stations': 5
+            },
+            nightlife: {
+                'Clubs (dancing)': 20,
+                'Pub Cafe': 18,
+                'Restaurants': 15,
+                'Cinema': 10,
+                'event_venue': 10,
+                'Hotels': 8,
+                'Lodging': 5,
+                'theatre': 5,
+                'Fast Food': 5,
+                'Shopping': 4
+            },
+            retirement: {
+                'Hospitals': 18,
+                'Pharmacies': 15,
+                'Doctor': 12,
+                'Churches': 10,
+                'Other Places of Worship': 5,
+                'Museums': 8,
+                'culture_centers': 5,
+                'Dental': 7,
+                'dental_clinic': 6,
+                'Dentist + Clinic': 5,
+                'post_office': 5,
+                'Bus stations': 4
+            },
+            culture: {
+                'Museums': 20,
+                'theatre': 18,
+                'Cinema': 12,
+                'Books': 12,
+                'University': 10,
+                'culture_centers': 10,
+                'event_venue': 8,
+                'Restaurants': 5,
+                'Shopping': 5
+            },
+            balanced: {} // Will be set to equal weights
+        };
+        
+        // Color gradient for heatmap (0-100)
+        function getHeatmapColor(value) {
+            // Red (0) -> Yellow (50) -> Green (100)
+            if (value < 50) {
+                const ratio = value / 50;
+                const r = 255;
+                const g = Math.round(140 + ratio * 115); // 140 -> 255
+                const b = 0;
+                return `rgb(${r}, ${g}, ${b})`;
+            } else {
+                const ratio = (value - 50) / 50;
+                const r = Math.round(255 - ratio * 105); // 255 -> 150
+                const g = 255;
+                const b = 0;
+                return `rgb(${r}, ${g}, ${b})`;
+            }
+        }
+        
+        // Initialize weights (equal distribution)
+        function initializeWeights(categories) {
+            const equalWeight = 100 / categories.length;
+            categories.forEach(cat => {
+                weights[cat] = equalWeight;
+            });
+            profiles.balanced = Object.fromEntries(
+                categories.map(cat => [cat, equalWeight])
+            );
+        }
+        
+        // Calculate weighted score for a city
+        function calculateWeightedScore(city) {
+            let score = 0;
+            Object.entries(weights).forEach(([category, weight]) => {
+                score += (city.scores[category] || 0) * (weight / 100);
+            });
+            return Math.round(score * 100) / 100;
+        }
+        
+        // Load JSON data
+        async function loadData() {
+            try {
+                const response = await fetch('cities_data.json');
+                citiesData = await response.json();
+                initializeWeights(citiesData.categories);
+                renderWeightControls();
+                renderTable();
+                setupProfileButtons();
+            } catch (error) {
+                console.error('Error loading data:', error);
+                alert('Error loading cities data. Make sure cities_data.json is in the same directory.');
+            }
+        }
+        
+        // Render weight control sliders
+        function renderWeightControls() {
+            const container = document.getElementById('weight-controls');
+            container.innerHTML = '';
+            
+            citiesData.categories.forEach(category => {
+                const control = document.createElement('div');
+                control.className = 'weight-control';
+                control.innerHTML = `
+                    <label for="weight-${category}">${category}</label>
+                    <div class="weight-input-group">
+                        <input 
+                            type="range" 
+                            id="weight-${category}" 
+                            min="0" 
+                            max="100" 
+                            step="0.5" 
+                            value="${weights[category]}"
+                        >
+                        <span class="weight-value">${weights[category].toFixed(1)}%</span>
+                    </div>
+                `;
+                container.appendChild(control);
+                
+                // Add event listener
+                const slider = control.querySelector('input');
+                const valueDisplay = control.querySelector('.weight-value');
+                slider.addEventListener('input', (e) => {
+                    const value = parseFloat(e.target.value);
+                    weights[category] = value;
+                    valueDisplay.textContent = `${value.toFixed(1)}%`;
+                    updateTable();
+                });
+            });
+        }
+        
+        // Apply profile weights
+        function applyProfile(profileName) {
+            const profile = profiles[profileName];
+            
+            // Reset all weights to 0
+            Object.keys(weights).forEach(cat => {
+                weights[cat] = 0;
+            });
+            
+            // Apply profile weights
+            Object.entries(profile).forEach(([category, weight]) => {
+                if (weights.hasOwnProperty(category)) {
+                    weights[category] = weight;
+                }
+            });
+            
+            // Update UI
+            citiesData.categories.forEach(category => {
+                const slider = document.getElementById(`weight-${category}`);
+                const valueDisplay = slider.parentElement.querySelector('.weight-value');
+                slider.value = weights[category];
+                valueDisplay.textContent = `${weights[category].toFixed(1)}%`;
+            });
+            
+            updateTable();
+        }
+        
+        // Setup profile button listeners
+        function setupProfileButtons() {
+            document.querySelectorAll('.profile-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.profile-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    applyProfile(btn.dataset.profile);
+                });
+            });
+        }
+        
+        // Reset weights to balanced
+        function resetWeights() {
+            initializeWeights(citiesData.categories);
+            renderWeightControls();
+            document.querySelectorAll('.profile-btn').forEach(b => b.classList.remove('active'));
+            updateTable();
+        }
+        
+        // Format social media links
+        function formatSocialLinks(social) {
+            const links = [];
+            if (social.official_website) {
+                links.push(`<a href="${social.official_website}" target="_blank">Web</a>`);
+            }
+            if (social.facebook_username) {
+                links.push(`<a href="https://facebook.com/${social.facebook_username}" target="_blank">FB</a>`);
+            }
+            if (social.youtube_handle) {
+                links.push(`<a href="https://youtube.com/@${social.youtube_handle}" target="_blank">YT</a>`);
+            }
+            return `<div class="social-links">${links.join(' ')}</div>`;
+        }
+        
+        // Render the main table
+        function renderTable() {
+            // Create header
+            const headerRow = document.getElementById('tableHeader');
+            let headerHTML = '<th>City</th><th class="weighted-score">Weighted Score</th>';
+            citiesData.categories.forEach(cat => {
+                headerHTML += `<th>${cat}</th>`;
+            });
+            headerHTML += '<th>Social</th>';
+            headerRow.innerHTML = headerHTML;
+            
+            // Create body
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = '';
+            
+            citiesData.cities.forEach(city => {
+                const row = document.createElement('tr');
+                const weightedScore = calculateWeightedScore(city);
+                
+                let rowHTML = `
+                    <td class="city-name">${city.name}</td>
+                    <td class="heatmap-cell weighted-score" style="background: ${getHeatmapColor(weightedScore)}">
+                        ${weightedScore.toFixed(1)}
+                    </td>
+                `;
+                
+                citiesData.categories.forEach(cat => {
+                    const score = city.scores[cat] || 0;
+                    rowHTML += `
+                        <td class="heatmap-cell" style="background: ${getHeatmapColor(score)}">
+                            ${score.toFixed(1)}
+                        </td>
+                    `;
+                });
+                
+                rowHTML += `<td>${formatSocialLinks(city.social)}</td>`;
+                row.innerHTML = rowHTML;
+                tbody.appendChild(row);
+            });
+            
+            // Initialize or update DataTable
+            if (dataTable) {
+                dataTable.destroy();
+            }
+            
+            dataTable = $('#cityTable').DataTable({
+                pageLength: 25,
+                order: [[1, 'desc']], // Sort by weighted score by default
+                columnDefs: [
+                    { orderable: true, targets: '_all' }
+                ]
+            });
+        }
+        
+        // Update table when weights change
+        function updateTable() {
+            const tbody = document.getElementById('tableBody');
+            const rows = tbody.querySelectorAll('tr');
+            
+            citiesData.cities.forEach((city, index) => {
+                const row = rows[index];
+                const weightedScore = calculateWeightedScore(city);
+                const weightedCell = row.querySelector('.weighted-score');
+                weightedCell.textContent = weightedScore.toFixed(1);
+                weightedCell.style.background = getHeatmapColor(weightedScore);
+            });
+            
+            // Re-sort the table
+            dataTable.order([[1, 'desc']]).draw();
+        }
+        
+        // Initialize on load
+        loadData();
+    </script>
+</body>
+</html>

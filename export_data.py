@@ -59,11 +59,11 @@ def export_database_to_json(db_path, output_dir):
     with open(f"{output_dir}/categories.json", 'w', encoding='utf-8') as f:
         json.dump(categories, f, ensure_ascii=False, indent=2)
     
-    # 3. Export city stats (venue counts)
-    print("Exporting city stats...")
+    # 3. Export city scores (normalized statistics)
+    print("Exporting city scores...")
     cursor.execute("""
-        SELECT cs.City_ID, cs.category, cs.count, c.name as city_name
-        FROM city_stats cs
+        SELECT cs.City_ID, cs.category, cs.score as count, c.name as city_name
+        FROM city_scores cs
         JOIN cities c ON cs.City_ID = c.ID
         ORDER BY c.rank, cs.category
     """)

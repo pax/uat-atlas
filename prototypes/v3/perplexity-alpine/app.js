@@ -1,109 +1,38 @@
-// Data
-const data = {
-  cities: [
-    {id: 'bucuresti', name: 'Bucuresti', pop: 1877155},
-    {id: 'bucuresi-s3', name: 'Sector 3', pop: 373566},
-    {id: 'bucuresi-s6', name: 'Sector 6', pop: 325759},
-    {id: 'cluj-napoca', name: 'Cluj-Napoca', pop: 324576},
-    {id: 'timisoara', name: 'Timisoara', pop: 319279},
-    {id: 'bucuresi-s2', name: 'Sector 2', pop: 290507},
-    {id: 'iasi', name: 'Iasi', pop: 290422},
-    {id: 'constanta', name: 'Constanta', pop: 283872},
-    {id: 'craiova', name: 'Craiova', pop: 269506},
-    {id: 'bucuresi-s4', name: 'Sector 4', pop: 262780},
-    {id: 'bucuresi-s5', name: 'Sector 5', pop: 239607},
-    {id: 'bucuresi-s1', name: 'Sector 1', pop: 224764},
-    {id: 'sfantu-gheorghe-cv', name: 'Sfantu Gheorghe', pop: 50080},
-    {id: 'brasov', name: 'Brasov', pop: 2532}
-  ],
-  categories: [
-    'ATMs', 'Books', 'Bus stations', 'Churches', 'Cinema', 'Clubs (dancing)',
-    'Dental', 'Dentist', 'Dentist + Clinic', 'Doctor', 'Fast Food', 'Gyms Fitness',
-    'Hospitals', 'Hotels', 'Lodging', 'Museums', 'Other Places of Worship',
-    'Pharmacies', 'Pub Cafe', 'Restaurants', 'Schools', 'Shopping', 'University',
-    'beauty wellness', 'culture_centers', 'dental_clinic', 'event_venue', 'gov',
-    'post_office', 'shopping_mall', 'sports', 'swimming_pool', 'theatre', 'veterinary_animals'
-  ],
-  scores: {
-    'Pharmacies': {'cluj-napoca': 0.43, 'bucuresi-s1': 0.61, 'bucuresi-s2': 0.49, 'bucuresti': 0.19, 'bucuresi-s5': 0.0, 'bucuresi-s3': 0.06, 'bucuresi-s4': 0.3, 'sfantu-gheorghe-cv': 0.29, 'brasov': 100.0, 'iasi': 1.08, 'timisoara': 0.19, 'craiova': 0.58, 'constanta': 0.87},
-    'University': {'bucuresi-s1': 2.36, 'sfantu-gheorghe-cv': 0.0, 'bucuresti': 0.56, 'bucuresi-s2': 0.58, 'bucuresi-s4': 0.16, 'bucuresi-s5': 0.42, 'bucuresi-s3': 0.06, 'constanta': 0.7, 'craiova': 0.53, 'brasov': 100.0, 'timisoara': 1.04, 'iasi': 2.04, 'cluj-napoca': 2.44},
-    'Books': {'bucuresi-s1': 1.88, 'sfantu-gheorghe-cv': 0.0, 'bucuresti': 0.27, 'bucuresi-s2': 0.16, 'bucuresi-s4': 0.16, 'bucuresi-s5': 0.09, 'bucuresi-s3': 0.04, 'cluj-napoca': 0.91, 'constanta': 0.21, 'brasov': 100.0, 'craiova': 0.14, 'timisoara': 0.26, 'iasi': 0.98},
-    'Other Places of Worship': {'bucuresi-s1': 0.38, 'sfantu-gheorghe-cv': 0.0, 'bucuresti': 0.81, 'bucuresi-s2': 1.74, 'bucuresi-s4': 0.32, 'bucuresi-s5': 0.35, 'bucuresi-s3': 1.36, 'cluj-napoca': 1.04, 'constanta': 4.46, 'craiova': 0.63, 'brasov': 100.0, 'timisoara': 0.53, 'iasi': 1.16},
-    'Lodging': {'bucuresi-s1': 0.39, 'bucuresi-s2': 0.02, 'sfantu-gheorghe-cv': 0.01, 'bucuresti': 0.05, 'bucuresi-s4': 0.01, 'bucuresi-s5': 0.0, 'bucuresi-s3': 0.1, 'cluj-napoca': 0.23, 'craiova': 0.04, 'constanta': 0.6, 'brasov': 100.0, 'timisoara': 0.18, 'iasi': 0.04},
-    'ATMs': {'bucuresi-s1': 1.41, 'bucuresi-s2': 0.46, 'sfantu-gheorghe-cv': 0.7, 'bucuresti': 0.37, 'bucuresi-s4': 0.28, 'bucuresi-s5': 0.0, 'bucuresi-s3': 0.3, 'cluj-napoca': 0.6, 'craiova': 0.32, 'constanta': 0.55, 'brasov': 100.0, 'timisoara': 0.39, 'iasi': 0.55},
-    'Hotels': {'bucuresi-s1': 0.54, 'bucuresi-s2': 0.15, 'bucuresti': 0.11, 'bucuresi-s4': 0.05, 'bucuresi-s5': 0.0, 'bucuresi-s3': 0.15, 'sfantu-gheorghe-cv': 0.06, 'brasov': 100.0, 'timisoara': 0.22, 'cluj-napoca': 0.28, 'craiova': 0.1, 'constanta': 0.97, 'iasi': 0.09},
-    'Fast Food': {'bucuresi-s1': 1.58, 'bucuresi-s2': 0.78, 'sfantu-gheorghe-cv': 0.1, 'bucuresti': 0.48, 'bucuresi-s4': 0.17, 'bucuresi-s5': 0.0, 'bucuresi-s3': 0.49, 'cluj-napoca': 0.47, 'craiova': 0.33, 'constanta': 0.7, 'brasov': 100.0, 'timisoara': 0.81, 'iasi': 0.89},
-    'Pub Cafe': {'bucuresi-s1': 1.64, 'bucuresi-s2': 0.39, 'sfantu-gheorghe-cv': 0.08, 'bucuresti': 0.25, 'bucuresi-s4': 0.0, 'bucuresi-s5': 0.0, 'bucuresi-s3': 0.27, 'cluj-napoca': 0.28, 'craiova': 0.09, 'constanta': 0.44, 'brasov': 100.0, 'timisoara': 0.18, 'iasi': 0.49},
-    'Restaurants': {'bucuresi-s1': 1.58, 'bucuresi-s2': 0.64, 'bucuresti': 0.36, 'bucuresi-s5': 0.05, 'bucuresi-s4': 0.17, 'bucuresi-s3': 0.31, 'sfantu-gheorghe-cv': 0.0, 'brasov': 100.0, 'timisoara': 0.37, 'cluj-napoca': 0.48, 'craiova': 0.19, 'constanta': 0.7, 'iasi': 0.31},
-    'Schools': {'bucuresi-s1': 1.19, 'bucuresi-s2': 0.65, 'bucuresti': 0.3, 'bucuresi-s5': 0.0, 'bucuresi-s4': 0.38, 'bucuresi-s3': 0.2, 'sfantu-gheorghe-cv': 0.11, 'brasov': 100.0, 'timisoara': 0.37, 'cluj-napoca': 0.43, 'craiova': 0.08, 'constanta': 0.32, 'iasi': 0.46},
-    'theatre': {'bucuresi-s1': 2.46, 'sfantu-gheorghe-cv': 2.24, 'bucuresti': 0.52, 'bucuresi-s4': 0.88, 'bucuresi-s5': 0.39, 'bucuresi-s2': 0.81, 'bucuresi-s3': 0.25, 'cluj-napoca': 0.53, 'constanta': 0.18, 'brasov': 100.0, 'craiova': 0.0, 'timisoara': 0.45, 'iasi': 0.81},
-    'Churches': {'bucuresi-s1': 0.58, 'bucuresi-s2': 0.19, 'bucuresti': 0.05, 'bucuresi-s5': 0.03, 'bucuresi-s4': 0.11, 'bucuresi-s3': 0.03, 'sfantu-gheorghe-cv': 0.41, 'brasov': 100.0, 'timisoara': 0.0, 'cluj-napoca': 0.99, 'iasi': 0.83, 'craiova': 0.24, 'constanta': 0.19},
-    'Clubs (dancing)': {'bucuresi-s1': 2.09, 'bucuresi-s2': 0.19, 'bucuresti': 0.44, 'bucuresi-s5': 0.03, 'bucuresi-s3': 1.22, 'bucuresi-s4': 0.06, 'brasov': 100.0, 'sfantu-gheorghe-cv': 0.0, 'timisoara': 0.24, 'cluj-napoca': 0.52, 'iasi': 0.3, 'craiova': 0.19, 'constanta': 0.71},
-    'Museums': {'bucuresi-s1': 3.48, 'bucuresi-s2': 0.04, 'bucuresti': 0.43, 'bucuresi-s5': 0.11, 'bucuresi-s3': 0.13, 'bucuresi-s4': 0.44, 'sfantu-gheorghe-cv': 2.11, 'brasov': 100.0, 'timisoara': 0.94, 'iasi': 2.03, 'cluj-napoca': 1.6, 'craiova': 0.22, 'constanta': 0.0},
-    'Cinema': {'bucuresi-s1': 1.14, 'bucuresi-s2': 0.63, 'bucuresti': 0.31, 'bucuresi-s5': 0.0, 'bucuresi-s3': 0.12, 'bucuresi-s4': 0.11, 'sfantu-gheorghe-cv': 0.5, 'brasov': 100.0, 'iasi': 0.52, 'timisoara': 0.66, 'cluj-napoca': 0.45, 'craiova': 0.46, 'constanta': 0.2},
-    'Hospitals': {'bucuresi-s1': 2.31, 'bucuresi-s2': 0.92, 'bucuresti': 0.4, 'bucuresi-s5': 0.0, 'bucuresi-s3': 0.01, 'bucuresi-s4': 0.43, 'sfantu-gheorghe-cv': 0.19, 'brasov': 100.0, 'iasi': 0.87, 'cluj-napoca': 0.82, 'timisoara': 1.06, 'craiova': 0.75, 'constanta': 0.3},
-    'gov': {'bucuresti': 0.21, 'bucuresi-s1': 1.89, 'brasov': 100.0, 'sfantu-gheorghe-cv': 1.03, 'bucuresi-s4': 0.04, 'bucuresi-s2': 0.39, 'bucuresi-s3': 0.0, 'constanta': 0.71, 'craiova': 0.19, 'iasi': 0.44, 'cluj-napoca': 0.24, 'timisoara': 0.8, 'bucuresi-s5': 0.04},
-    'post_office': {'bucuresti': 0.22, 'bucuresi-s1': 0.4, 'brasov': 100.0, 'sfantu-gheorghe-cv': 0.05, 'bucuresi-s4': 0.09, 'bucuresi-s2': 0.63, 'bucuresi-s3': 0.24, 'bucuresi-s5': 0.0, 'constanta': 0.34, 'craiova': 0.48, 'iasi': 0.45, 'cluj-napoca': 0.29, 'timisoara': 0.45},
-    'Dental': {'bucuresti': 0.46, 'bucuresi-s1': 1.78, 'brasov': 100.0, 'sfantu-gheorghe-cv': 0.0, 'bucuresi-s4': 0.3, 'bucuresi-s5': 0.06, 'bucuresi-s2': 0.95, 'bucuresi-s3': 0.39, 'constanta': 0.65, 'craiova': 0.39, 'iasi': 0.89, 'cluj-napoca': 0.91, 'timisoara': 0.84},
-    'sports': {'bucuresti': 0.4, 'bucuresi-s1': 1.41, 'brasov': 100.0, 'sfantu-gheorghe-cv': 0.16, 'bucuresi-s4': 0.4, 'bucuresi-s5': 0.0, 'bucuresi-s2': 0.84, 'bucuresi-s3': 0.28, 'constanta': 0.28, 'craiova': 0.0, 'cluj-napoca': 0.43, 'iasi': 0.28, 'timisoara': 0.22},
-    'swimming_pool': {'bucuresti': 1.03, 'bucuresi-s1': 2.68, 'sfantu-gheorghe-cv': 1.16, 'brasov': 100.0, 'bucuresi-s4': 1.24, 'bucuresi-s5': 0.0, 'bucuresi-s2': 1.95, 'bucuresi-s3': 0.72, 'constanta': 2.01, 'craiova': 0.1, 'cluj-napoca': 0.91, 'iasi': 0.49, 'timisoara': 1.2},
-    'Bus stations': {'bucuresi-s1': 99.36, 'bucuresi-s2': 62.06, 'bucuresti': 51.74, 'bucuresi-s5': 49.45, 'bucuresi-s3': 39.04, 'bucuresi-s4': 52.03, 'sfantu-gheorghe-cv': 0.0, 'brasov': 100.0, 'timisoara': 0.16, 'cluj-napoca': 2.03, 'iasi': 3.31, 'craiova': 0.19, 'constanta': 0.0},
-    'Gyms Fitness': {'bucuresti': 0.4, 'bucuresi-s1': 1.19, 'sfantu-gheorghe-cv': 0.11, 'brasov': 100.0, 'bucuresi-s4': 0.45, 'bucuresi-s5': 0.17, 'bucuresi-s2': 0.68, 'bucuresi-s3': 0.24, 'constanta': 0.26, 'craiova': 0.0, 'cluj-napoca': 0.81, 'iasi': 0.37, 'timisoara': 0.26},
-    'culture_centers': {'bucuresi-s1': 5.76, 'sfantu-gheorghe-cv': 5.52, 'bucuresti': 1.35, 'bucuresi-s4': 0.0, 'bucuresi-s5': 0.06, 'bucuresi-s2': 3.63, 'bucuresi-s3': 0.78, 'constanta': 1.21, 'brasov': 100.0, 'craiova': 0.93, 'timisoara': 2.93, 'cluj-napoca': 2.56, 'iasi': 1.35},
-    'beauty wellness': {'bucuresi-s1': 1.25, 'sfantu-gheorghe-cv': 0.0, 'bucuresti': 0.29, 'bucuresi-s4': 0.2, 'bucuresi-s5': 0.09, 'bucuresi-s2': 0.48, 'bucuresi-s3': 0.24, 'brasov': 100.0, 'constanta': 0.44, 'craiova': 0.05, 'timisoara': 0.2, 'cluj-napoca': 0.43, 'iasi': 0.32},
-    'event_venue': {'bucuresi-s1': 2.02, 'sfantu-gheorghe-cv': 0.47, 'bucuresti': 0.43, 'bucuresi-s4': 0.33, 'bucuresi-s5': 0.1, 'bucuresi-s2': 0.89, 'bucuresi-s3': 0.22, 'brasov': 100.0, 'constanta': 0.23, 'craiova': 0.0, 'timisoara': 0.44, 'cluj-napoca': 0.45, 'iasi': 0.33},
-    'Shopping': {'bucuresi-s1': 0.92, 'bucuresti': 0.21, 'sfantu-gheorghe-cv': 0.18, 'brasov': 100.0, 'bucuresi-s4': 0.11, 'bucuresi-s5': 0.0, 'bucuresi-s2': 0.48, 'bucuresi-s3': 0.14, 'constanta': 0.29, 'craiova': 0.09, 'cluj-napoca': 0.37, 'timisoara': 0.16, 'iasi': 0.45},
-    'shopping_mall': {'bucuresi-s1': 0.61, 'sfantu-gheorghe-cv': 0.23, 'bucuresti': 0.32, 'bucuresi-s4': 0.2, 'bucuresi-s5': 0.16, 'bucuresi-s2': 0.46, 'bucuresi-s3': 0.44, 'brasov': 100.0, 'constanta': 0.93, 'craiova': 0.46, 'cluj-napoca': 0.0, 'timisoara': 0.15, 'iasi': 0.84},
-    'veterinary_animals': {'bucuresi-s1': 1.05, 'bucuresti': 0.3, 'sfantu-gheorghe-cv': 0.55, 'bucuresi-s4': 0.43, 'bucuresi-s5': 0.06, 'bucuresi-s2': 0.86, 'bucuresi-s3': 0.01, 'brasov': 100.0, 'constanta': 0.0, 'craiova': 0.05, 'cluj-napoca': 0.8, 'timisoara': 0.22, 'iasi': 0.87},
-    'Doctor': {'timisoara': 0.7, 'cluj-napoca': 0.64, 'iasi': 1.64, 'brasov': 100.0, 'craiova': 0.5, 'constanta': 1.02, 'sfantu-gheorghe-cv': 0.0},
-    'dental_clinic': {'timisoara': 0.66, 'cluj-napoca': 1.05, 'iasi': 1.03, 'sfantu-gheorghe-cv': 0.0, 'brasov': 100.0, 'craiova': 0.5, 'constanta': 0.49},
-    'Dentist': {'timisoara': 0.93, 'cluj-napoca': 0.91, 'iasi': 0.73, 'constanta': 0.68, 'sfantu-gheorghe-cv': 0.0, 'brasov': 100.0, 'craiova': 0.31},
-    'Dentist + Clinic': {'sfantu-gheorghe-cv': 0.0, 'brasov': 100.0, 'craiova': 0.39, 'constanta': 0.64, 'iasi': 0.89, 'timisoara': 0.84, 'cluj-napoca': 0.91}
-  },
-  stats: {
-    'ATMs': {avg: 0.003869, median: 0.000392},
-    'Books': {avg: 0.00177, median: 0.000162},
-    'Bus stations': {avg: 0.000698, median: 0.000771},
-    'Churches': {avg: 0.00309, median: 0.000279},
-    'Cinema': {avg: 0.000259, median: 0.000019},
-    'Clubs (dancing)': {avg: 0.001104, median: 0.000117},
-    'Dental': {avg: 0.009133, median: 0.001286},
-    'Dentist': {avg: 0.009681, median: 0.000912},
-    'Dentist + Clinic': {avg: 0.015852, median: 0.001478},
-    'Doctor': {avg: 0.018124, median: 0.001538},
-    'Fast Food': {avg: 0.003017, median: 0.000412},
-    'Gyms Fitness': {avg: 0.003572, median: 0.000331},
-    'Hospitals': {avg: 0.004147, median: 0.000679},
-    'Hotels': {avg: 0.01127, median: 0.000412},
-    'Lodging': {avg: 0.041602, median: 0.001067},
-    'Museums': {avg: 0.000541, median: 0.000061},
-    'Other Places of Worship': {avg: 0.000103, median: 0.00001},
-    'Pharmacies': {avg: 0.005676, median: 0.000687},
-    'Pub Cafe': {avg: 0.011322, median: 0.001116},
-    'Restaurants': {avg: 0.019357, median: 0.001992},
-    'Schools': {avg: 0.006707, median: 0.000777},
-    'Shopping': {avg: 0.109246, median: 0.010661},
-    'University': {avg: 0.001182, median: 0.000117},
-    'beauty wellness': {avg: 0.013925, median: 0.0013},
-    'culture_centers': {avg: 0.000202, median: 0.000038},
-    'dental_clinic': {avg: 0.008264, median: 0.000576},
-    'event_venue': {avg: 0.002812, median: 0.000329},
-    'gov': {avg: 0.004648, median: 0.000668},
-    'post_office': {avg: 0.000932, median: 0.000092},
-    'shopping_mall': {avg: 0.001741, median: 0.000182},
-    'sports': {avg: 0.0051, median: 0.00049},
-    'swimming_pool': {avg: 0.000218, median: 0.00004},
-    'theatre': {avg: 0.000293, median: 0.000046},
-    'veterinary_animals': {avg: 0.001942, median: 0.000293}
-  }
-};
-
-// State
-const state = {
+// Application state
+let data = null;
+let state = {
   selectedCities: [],
-  selectedCategories: new Set(data.categories),
+  selectedCategories: new Set(),
   viewMode: 'heatmap',
   sortBy: 'name'
+};
+
+// Import data from project data folder
+async function loadData() {
+  try {
+    const response = await fetch('/data/json/data.min.json');
+    if (!response.ok) {
+      // Try fallback path
+      const fallbackResponse = await fetch('/prototypes/v3/perplexity-alpine/data.js');
+      if (!fallbackResponse.ok) {
+        throw new Error(`Failed to load data from both paths. HTTP status: ${response.status}, ${fallbackResponse.status}`);
+      }
+      return await fallbackResponse.json();
+    }
+    const moduleText = await response.text();
+    // Convert the module text to a module URL
+    const blob = new Blob([moduleText], { type: 'text/javascript' });
+    const url = URL.createObjectURL(blob);
+    const module = await import(url);
+    URL.revokeObjectURL(url);
+    
+    if (!module.data) throw new Error('Data object not found in module');
+    return module.data;
+  } catch (err) {
+    console.error('Failed to load data:', err);
+    showError('Failed to load data. Please ensure data files are generated.');
+    return null;
+  }
 };
 
 // City colors for bar view
@@ -445,5 +374,37 @@ function attachEventListeners() {
   });
 }
 
+// Show error message
+function showError(message) {
+  const container = document.getElementById('comparisonView');
+  container.innerHTML = `
+    <div class="error-state">
+      <div class="error-icon">⚠️</div>
+      <div class="error-message">${message}</div>
+      <div class="error-help">Try running these commands:</div>
+      <pre class="error-commands">
+python export_data.py
+python convert_data-v3-perplexity-alpine.py</pre>
+    </div>
+  `;
+}
+
+// Show loading state
+function showLoading() {
+  const container = document.getElementById('comparisonView');
+  container.innerHTML = `
+    <div class="loading-state">
+      <div class="loading-spinner"></div>
+      <div class="loading-text">Loading data...</div>
+    </div>
+  `;
+}
+
 // Start the app
-init();
+showLoading();
+loadData().then(loadedData => {
+  if (loadedData) {
+    window.data = loadedData;  // Make data globally available
+    init();
+  }
+});

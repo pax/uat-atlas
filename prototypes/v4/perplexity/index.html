@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>City Comparison Tool - Weighted Scoring &amp; Heatmap</title>
+    
+    <!-- jQuery (required for DataTables) -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    
+    <!-- DataTables -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+    
+    <style>
+        :root {
+            --color-white: rgba(255, 255, 255, 1);
+            --color-cream-50: rgba(252, 252, 249, 1);
+            --color-cream-100: rgba(255, 255, 253, 1);
+            --color-gray-200: rgba(245, 245, 245, 1);
+            --color-gray-300: rgba(167, 169, 169, 1);
+            --color-slate-500: rgba(98, 108, 113, 1);
+            --color-slate-900: rgba(19, 52, 59, 1);
+            --color-teal-500: rgba(33, 128, 141, 1);
+            --color-teal-600: rgba(29, 116, 128, 1);
+            --color-charcoal-700: rgba(31, 33, 33, 1);
+            --color-charcoal-800: rgba(38, 40, 40, 1);
+            
+            --color-background: var(--color-cream-50);
+            --color-surface: var(--color-cream-100);
+            --color-text: var(--color-slate-900);
+            --color-text-secondary: var(--color-slate-500);
+            --color-primary: var(--color-teal-500);
+            --color-primary-hover: var(--color-teal-600);
+            --color-border: rgba(94, 82, 64, 0.2);
+            --color-card-border: rgba(94, 82, 64, 0.12);
+            
+            --font-family-base: "FKGroteskNeue", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            --space-8: 8px;
+            --space-12: 12px;
+            --space-16: 16px;
+            --space-20: 20px;
+            --space-24: 24px;
+            --space-32: 32px;
+            --radius-base: 8px;
+            --radius-lg: 12px;
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.04), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
+        }
+        
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --color-background: var(--color-charcoal-700);
+                --color-surface: var(--color-charcoal-800);
+                --color-text: var(--color-gray-200);
+                --color-text-secondary: rgba(167, 169, 169, 0.7);
+                --color-border: rgba(119, 124, 124, 0.3);
+                --color-card-border: rgba(119, 124, 124, 0.2);
+            }
+        }
+        
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: var(--font-family-base);
+            background-color: var(--color-background);
+            color: var(--color-text);
+            line-height: 1.5;
+        }
+        
+        .app-container {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        .sidebar {
+            width: 320px;
+            background-color: var(--color-surface);
+            border-right: 1px solid var(--color-border);
+            padding: var(--space-24);
+            overflow-y: auto;
+        }
+        
+        .main-content {
+            flex: 1;
+            padding: var(--space-24);
+            overflow-x: auto;
+        }
+        
+        h1 {
+            margin: 0 0 var(--space-24) 0;
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--color-text);
+        }
+        
+        h2 {
+            margin: 0 0 var(--space-16) 0;
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--color-text);
+        }
+        
+        h3 {
+            margin: 0 0 var(--space-12) 0;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--color-text);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .section {
+            margin-bottom: var(--space-32);
+        }
+        
+        .upload-area {
+            border: 2px dashed var(--color-border);
+            border-radius: var(--radius-base);
+            padding: var(--space-24);
+            text-align: center;
+            background-color: var(--color-background);
+            margin-bottom: var(--space-24);
+        }
+        
+        .file-input-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+        
+        input[type="file"] {
+            position: absolute;
+            left: -9999px;
+        }
+        
+        .file-input-label {
+            display: inline-block;
+            padding: var(--space-12) var(--space-24);
+            background-color: var(--color-primary);
+            color: white;
+            border-radius: var(--radius-base);
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.2s;
+        }
+        
+        .file-input-label:hover {
+            background-color: var(--color-primary-hover);
+        }
+        
+        .file-name {
+            display: block;
+            margin-top: var(--space-12);
+            font-size: 14px;
+            color: var(--color-text-secondary);
+        }
+        
+        .weight-control {
+            margin-bottom: var(--space-16);
+        }
+        
+        .weight-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-8);
+            font-size: 14px;
+        }
+        
+        .weight-name {
+            font-weight: 500;
+            color: var(--color-text);
+        }
+        
+        .weight-value {
+            font-weight: 600;
+            color: var(--color-primary);
+            min-width: 45px;
+            text-align: right;
+        }
+        
+        input[type="range"] {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: var(--color-border);
+            outline: none;
+            -webkit-appearance: none;
+        }
+        
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--color-primary);
+            cursor: pointer;
+        }
+        
+        input[type="range"]::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--color-primary);
+            cursor: pointer;
+            border: none;
+        }
+        
+        .profiles-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--space-12);
+            margin-bottom: var(--space-16);
+        }
+        
+        .profile-btn {
+            padding: var(--space-12);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-base);
+            background-color: var(--color-surface);
+            color: var(--color-text);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .profile-btn:hover {
+            background-color: var(--color-primary);
+            color: white;
+            border-color: var(--color-primary);
+        }
+        
+        .profile-btn.active {
+            background-color: var(--color-primary);
+            color: white;
+            border-color: var(--color-primary);
+        }
+        
+        .custom-profile-section {
+            margin-top: var(--space-16);
+            padding-top: var(--space-16);
+            border-top: 1px solid var(--color-border);
+        }
+        
+        .custom-profile-input {
+            display: flex;
+            gap: var(--space-8);
+            margin-bottom: var(--space-12);
+        }
+        
+        input[type="text"] {
+            flex: 1;
+            padding: var(--space-8) var(--space-12);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-base);
+            background-color: var(--color-background);
+            color: var(--color-text);
+            font-size: 14px;
+        }
+        
+        .btn {
+            padding: var(--space-8) var(--space-16);
+            border: none;
+            border-radius: var(--radius-base);
+            background-color: var(--color-primary);
+            color: white;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .btn:hover {
+            background-color: var(--color-primary-hover);
+        }
+        
+        .btn-secondary {
+            background-color: var(--color-surface);
+            color: var(--color-text);
+            border: 1px solid var(--color-border);
+        }
+        
+        .btn-secondary:hover {
+            background-color: var(--color-background);
+        }
+        
+        .custom-profiles-list {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-8);
+        }
+        
+        .custom-profile-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--space-8);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-base);
+            font-size: 13px;
+        }
+        
+        .custom-profile-name {
+            cursor: pointer;
+            flex: 1;
+        }
+        
+        .custom-profile-name:hover {
+            color: var(--color-primary);
+        }
+        
+        .delete-btn {
+            background: none;
+            border: none;
+            color: var(--color-text-secondary);
+            cursor: pointer;
+            padding: var(--space-4);
+            font-size: 16px;
+        }
+        
+        .delete-btn:hover {
+            color: #ff4444;
+        }
+        
+        #cityTable {
+            width: 100% !important;
+            background-color: var(--color-surface);
+            border-radius: var(--radius-base);
+        }
+        
+        #cityTable thead th {
+            background-color: var(--color-primary);
+            color: white;
+            font-weight: 600;
+            padding: var(--space-12) var(--space-16);
+            text-align: left;
+        }
+        
+        #cityTable tbody td {
+            padding: var(--space-12) var(--space-16);
+            border-bottom: 1px solid var(--color-border);
+        }
+        
+        #cityTable tbody tr:hover {
+            background-color: var(--color-background);
+        }
+        
+        .dataTables_wrapper {
+            padding: var(--space-16);
+            background-color: var(--color-surface);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .dataTables_filter input {
+            margin-left: var(--space-8);
+            padding: var(--space-8) var(--space-12);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-base);
+            background-color: var(--color-background);
+            color: var(--color-text);
+        }
+        
+        .dataTables_length select {
+            margin: 0 var(--space-8);
+            padding: var(--space-8);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-base);
+            background-color: var(--color-background);
+            color: var(--color-text);
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: var(--space-32);
+            color: var(--color-text-secondary);
+        }
+        
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: var(--space-16);
+        }
+        
+        @media (max-width: 768px) {
+            .app-container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid var(--color-border);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar with controls -->
+        <div class="sidebar">
+            <h1>City Comparison</h1>
+            
+            <!-- File Upload Section -->
+            <div class="section">
+                <h3>Data Import</h3>
+                <div class="upload-area">
+                    <div class="file-input-wrapper">
+                        <input type="file" id="fileInput" accept=".csv,.json">
+                        <label for="fileInput" class="file-input-label">Choose File</label>
+                    </div>
+                    <span class="file-name" id="fileName">No file selected</span>
+                </div>
+            </div>
+            
+            <!-- Profiles Section -->
+            <div class="section">
+                <h3>Profiles</h3>
+                <div class="profiles-grid">
+                    <button class="profile-btn" data-profile="kids">Kids Friendly</button>
+                    <button class="profile-btn" data-profile="nightlife">Nightlife</button>
+                    <button class="profile-btn" data-profile="retirement">Retirement</button>
+                    <button class="profile-btn" data-profile="culture">Culture</button>
+                </div>
+                
+                <div class="custom-profile-section">
+                    <h3 style="font-size: 12px;">Custom Profiles</h3>
+                    <div class="custom-profile-input">
+                        <input type="text" id="customProfileName" placeholder="Profile name...">
+                        <button class="btn" id="saveProfileBtn">Save</button>
+                    </div>
+                    <div class="custom-profiles-list" id="customProfilesList"></div>
+                </div>
+            </div>
+            
+            <!-- Weight Controls Section -->
+            <div class="section">
+                <h3>Weight Settings</h3>
+                <div id="weightControls">
+                    <div class="empty-state" style="padding: var(--space-16); font-size: 13px;">
+                        Upload data to configure weights
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Content Area -->
+        <div class="main-content">
+            <h2>City Rankings</h2>
+            <div id="tableContainer">
+                <div class="empty-state">
+                    <div class="empty-state-icon">📊</div>
+                    <p>Upload a CSV or JSON file to get started</p>
+                    <p style="font-size: 13px;">Expected format: city, property1, property2, ...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Application state
+        let cityData = [];
+        let properties = [];
+        let weights = {};
+        let dataTable = null;
+        let customProfiles = [];
+        
+        // Predefined profiles
+        const predefinedProfiles = {
+            kids: {
+                name: "Kids Friendly",
+                weights: {
+                    safety: 30,
+                    parks: 25,
+                    schools: 25,
+                    entertainment: 20
+                }
+            },
+            nightlife: {
+                name: "Nightlife",
+                weights: {
+                    bars_restaurants: 35,
+                    entertainment: 30,
+                    safety: 20,
+                    culture: 15
+                }
+            },
+            retirement: {
+                name: "Retirement",
+                weights: {
+                    healthcare: 35,
+                    safety: 25,
+                    parks: 20,
+                    cost_of_living: 20
+                }
+            },
+            culture: {
+                name: "Culture",
+                weights: {
+                    museums: 30,
+                    culture: 30,
+                    entertainment: 20,
+                    restaurants: 20
+                }
+            }
+        };
+        
+        // File upload handler
+        document.getElementById('fileInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            document.getElementById('fileName').textContent = file.name;
+            
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const content = event.target.result;
+                
+                if (file.name.endsWith('.json')) {
+                    parseJSON(content);
+                } else if (file.name.endsWith('.csv')) {
+                    parseCSV(content);
+                }
+            };
+            reader.readAsText(file);
+        });
+        
+        // Parse JSON data
+        function parseJSON(content) {
+            try {
+                const data = JSON.parse(content);
+                processData(data);
+            } catch (error) {
+                alert('Error parsing JSON file: ' + error.message);
+            }
+        }
+        
+        // Parse CSV data
+        function parseCSV(content) {
+            const lines = content.trim().split('\n');
+            if (lines.length < 2) {
+                alert('CSV file must have at least a header row and one data row');
+                return;
+            }
+            
+            const headers = lines[0].split(',').map(h => h.trim());
+            const data = [];
+            
+            for (let i = 1; i < lines.length; i++) {
+                const values = lines[i].split(',').map(v => v.trim());
+                const obj = {};
+                
+                for (let j = 0; j < headers.length; j++) {
+                    const value = values[j];
+                    // Try to parse as number, otherwise keep as string
+                    obj[headers[j]] = isNaN(value) ? value : parseFloat(value);
+                }
+                data.push(obj);
+            }
+            
+            processData(data);
+        }
+        
+        // Process uploaded data
+        function processData(data) {
+            if (!data || data.length === 0) {
+                alert('No data found in file');
+                return;
+            }
+            
+            cityData = data;
+            
+            // Extract properties (all keys except 'city')
+            const firstItem = data[0];
+            properties = Object.keys(firstItem).filter(key => 
+                key.toLowerCase() !== 'city' && typeof firstItem[key] === 'number'
+            );
+            
+            // Initialize weights equally
+            const equalWeight = Math.floor(100 / properties.length);
+            weights = {};
+            properties.forEach(prop => {
+                weights[prop] = equalWeight;
+            });
+            
+            // Normalize to 100%
+            const total = Object.values(weights).reduce((sum, w) => sum + w, 0);
+            if (total !== 100 && properties.length > 0) {
+                weights[properties[0]] += (100 - total);
+            }
+            
+            createWeightControls();
+            calculateScores();
+            renderTable();
+        }
+        
+        // Create weight control sliders
+        function createWeightControls() {
+            const container = document.getElementById('weightControls');
+            container.innerHTML = '';
+            
+            properties.forEach(prop => {
+                const control = document.createElement('div');
+                control.className = 'weight-control';
+                control.innerHTML = `
+                    <div class="weight-label">
+                        <span class="weight-name">${formatPropertyName(prop)}</span>
+                        <span class="weight-value" id="weight-${prop}">${weights[prop]}%</span>
+                    </div>
+                    <input type="range" min="0" max="100" value="${weights[prop]}" 
+                           id="slider-${prop}" data-property="${prop}">
+                `;
+                container.appendChild(control);
+                
+                // Add event listener
+                const slider = control.querySelector('input[type="range"]');
+                slider.addEventListener('input', handleWeightChange);
+            });
+        }
+        
+        // Handle weight slider changes
+        function handleWeightChange(e) {
+            const property = e.target.dataset.property;
+            const value = parseInt(e.target.value);
+            
+            weights[property] = value;
+            document.getElementById(`weight-${property}`).textContent = value + '%';
+            
+            calculateScores();
+            updateTable();
+        }
+        
+        // Calculate weighted scores
+        function calculateScores() {
+            cityData.forEach(city => {
+                let score = 0;
+                let totalWeight = 0;
+                
+                properties.forEach(prop => {
+                    if (city[prop] !== undefined && city[prop] !== null) {
+                        score += city[prop] * weights[prop];
+                        totalWeight += weights[prop];
+                    }
+                });
+                
+                city.weighted_score = totalWeight > 0 ? score / totalWeight : 0;
+            });
+        }
+        
+        // Get heatmap color based on value and min/max
+        function getHeatmapColor(value, min, max) {
+            if (min === max) return 'rgba(255, 255, 200, 0.3)';
+            
+            const normalized = (value - min) / (max - min);
+            
+            let r, g, b;
+            if (normalized < 0.5) {
+                // Red to Yellow
+                const t = normalized * 2;
+                r = 255;
+                g = Math.floor(t * 255);
+                b = 0;
+            } else {
+                // Yellow to Green
+                const t = (normalized - 0.5) * 2;
+                r = Math.floor((1 - t) * 255);
+                g = 255;
+                b = 0;
+            }
+            
+            return `rgba(${r}, ${g}, ${b}, 0.3)`;
+        }
+        
+        // Calculate min/max for each property
+        function getPropertyStats() {
+            const stats = {};
+            
+            properties.forEach(prop => {
+                const values = cityData.map(city => city[prop]).filter(v => v !== undefined && v !== null);
+                stats[prop] = {
+                    min: Math.min(...values),
+                    max: Math.max(...values)
+                };
+            });
+            
+            return stats;
+        }
+        
+        // Render DataTable
+        function renderTable() {
+            const container = document.getElementById('tableContainer');
+            
+            // Find city column name (case insensitive)
+            const cityColumn = Object.keys(cityData[0]).find(key => key.toLowerCase() === 'city') || 'city';
+            
+            // Create table HTML
+            let tableHTML = '<table id="cityTable" class="display">';
+            tableHTML += '<thead><tr>';
+            tableHTML += '<th>City</th>';
+            tableHTML += '<th>Weighted Score</th>';
+            properties.forEach(prop => {
+                tableHTML += `<th>${formatPropertyName(prop)}</th>`;
+            });
+            tableHTML += '</tr></thead><tbody></tbody></table>';
+            
+            container.innerHTML = tableHTML;
+            
+            // Get property statistics for heatmap
+            const stats = getPropertyStats();
+            
+            // Initialize DataTable
+            dataTable = $('#cityTable').DataTable({
+                data: cityData,
+                columns: [
+                    { 
+                        data: cityColumn,
+                        title: 'City'
+                    },
+                    { 
+                        data: 'weighted_score',
+                        title: 'Weighted Score',
+                        render: function(data) {
+                            return data.toFixed(2);
+                        }
+                    },
+                    ...properties.map(prop => ({
+                        data: prop,
+                        title: formatPropertyName(prop),
+                        createdCell: function(td, cellData, rowData, row, col) {
+                            const color = getHeatmapColor(cellData, stats[prop].min, stats[prop].max);
+                            td.style.backgroundColor = color;
+                        }
+                    }))
+                ],
+                pageLength: 25,
+                order: [[1, 'desc']],
+                destroy: true
+            });
+        }
+        
+        // Update existing table
+        function updateTable() {
+            if (!dataTable) return;
+            
+            const stats = getPropertyStats();
+            
+            dataTable.clear();
+            dataTable.rows.add(cityData);
+            dataTable.draw();
+            
+            // Update heatmap colors
+            dataTable.rows().every(function() {
+                const rowNode = this.node();
+                const rowData = this.data();
+                const cells = rowNode.querySelectorAll('td');
+                
+                // Skip city and weighted_score columns (0 and 1)
+                properties.forEach((prop, index) => {
+                    const cellIndex = index + 2;
+                    if (cells[cellIndex]) {
+                        const value = rowData[prop];
+                        const color = getHeatmapColor(value, stats[prop].min, stats[prop].max);
+                        cells[cellIndex].style.backgroundColor = color;
+                    }
+                });
+            });
+        }
+        
+        // Format property name for display
+        function formatPropertyName(prop) {
+            return prop.split('_').map(word => 
+                word.charAt(0).toUpperCase() + word.slice(1)
+            ).join(' ');
+        }
+        
+        // Profile button handlers
+        document.querySelectorAll('.profile-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const profileKey = this.dataset.profile;
+                applyProfile(predefinedProfiles[profileKey].weights);
+                
+                // Update active state
+                document.querySelectorAll('.profile-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+        
+        // Apply profile weights
+        function applyProfile(profileWeights) {
+            // Reset all weights to 0
+            properties.forEach(prop => {
+                weights[prop] = 0;
+            });
+            
+            // Apply profile weights
+            Object.keys(profileWeights).forEach(prop => {
+                if (weights.hasOwnProperty(prop)) {
+                    weights[prop] = profileWeights[prop];
+                }
+            });
+            
+            // Update UI
+            properties.forEach(prop => {
+                const slider = document.getElementById(`slider-${prop}`);
+                const valueDisplay = document.getElementById(`weight-${prop}`);
+                if (slider && valueDisplay) {
+                    slider.value = weights[prop];
+                    valueDisplay.textContent = weights[prop] + '%';
+                }
+            });
+            
+            calculateScores();
+            updateTable();
+        }
+        
+        // Save custom profile
+        document.getElementById('saveProfileBtn').addEventListener('click', function() {
+            const nameInput = document.getElementById('customProfileName');
+            const name = nameInput.value.trim();
+            
+            if (!name) {
+                alert('Please enter a profile name');
+                return;
+            }
+            
+            if (properties.length === 0) {
+                alert('Please load data first');
+                return;
+            }
+            
+            const profile = {
+                name: name,
+                weights: {...weights}
+            };
+            
+            customProfiles.push(profile);
+            nameInput.value = '';
+            renderCustomProfiles();
+        });
+        
+        // Render custom profiles list
+        function renderCustomProfiles() {
+            const container = document.getElementById('customProfilesList');
+            container.innerHTML = '';
+            
+            customProfiles.forEach((profile, index) => {
+                const item = document.createElement('div');
+                item.className = 'custom-profile-item';
+                item.innerHTML = `
+                    <span class="custom-profile-name" data-index="${index}">${profile.name}</span>
+                    <button class="delete-btn" data-index="${index}">&times;</button>
+                `;
+                container.appendChild(item);
+                
+                // Apply profile on click
+                item.querySelector('.custom-profile-name').addEventListener('click', function() {
+                    applyProfile(profile.weights);
+                    document.querySelectorAll('.profile-btn').forEach(b => b.classList.remove('active'));
+                });
+                
+                // Delete profile
+                item.querySelector('.delete-btn').addEventListener('click', function() {
+                    customProfiles.splice(index, 1);
+                    renderCustomProfiles();
+                });
+            });
+        }
+    </script>
+</body>
+</html>
