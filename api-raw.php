@@ -19,7 +19,7 @@ try {
         ");
         $categories = $categoriesStmt->fetchAll(PDO::FETCH_COLUMN);
 
-        // Get cities with their raw category scores
+        // Get cities with their raw category scores and counts
         $citiesStmt = $db->query("
             SELECT
                 c.ID,
@@ -27,9 +27,11 @@ try {
                 c.county,
                 c.pop,
                 sc.category,
-                sc.score
+                sc.score,
+                cs.count
             FROM cities c
             LEFT JOIN city_scores sc ON c.ID = sc.City_ID
+            LEFT JOIN city_stats cs ON c.ID = cs.City_ID AND sc.category = cs.category
             ORDER BY c.pop DESC
         ");
 
@@ -44,12 +46,14 @@ try {
                     'name' => $row['name'],
                     'county' => $row['county'],
                     'population' => $row['pop'],
-                    'scores' => []
+                    'scores' => [],
+                    'counts' => []
                 ];
             }
 
             if ($row['category']) {
                 $citiesData[$cityId]['scores'][$row['category']] = $row['score'];
+                $citiesData[$cityId]['counts'][$row['category']] = $row['count'] ? intval($row['count']) : null;
             }
         }
 
@@ -63,6 +67,7 @@ try {
             foreach ($categories as $category) {
                 if (!isset($city['scores'][$category])) {
                     $city['scores'][$category] = null;
+                    $city['counts'][$category] = null;
                 } else {
                     $totalScore += $city['scores'][$category];
                     $scoreCount++;
@@ -90,7 +95,8 @@ try {
                 c.county,
                 c.pop,
                 cs.parent_category,
-                ROUND(AVG(sc.score), 2) AS avg_score
+                ROUND(AVG(sc.score), 2) AS avg_score,
+                SUM(cs.count) AS total_count
             FROM cities c
             LEFT JOIN city_stats cs ON c.ID = cs.City_ID
             LEFT JOIN city_scores sc ON cs.City_ID = sc.City_ID AND cs.category = sc.category
@@ -109,12 +115,14 @@ try {
                     'name' => $row['name'],
                     'county' => $row['county'],
                     'population' => $row['pop'],
-                    'scores' => []
+                    'scores' => [],
+                    'counts' => []
                 ];
             }
 
             if ($row['parent_category']) {
                 $citiesData[$cityId]['scores'][$row['parent_category']] = $row['avg_score'];
+                $citiesData[$cityId]['counts'][$row['parent_category']] = $row['total_count'] ? intval($row['total_count']) : null;
             }
         }
 
@@ -128,6 +136,7 @@ try {
             foreach ($categories as $category) {
                 if (!isset($city['scores'][$category])) {
                     $city['scores'][$category] = null;
+                    $city['counts'][$category] = null;
                 } else {
                     $totalScore += $city['scores'][$category];
                     $scoreCount++;

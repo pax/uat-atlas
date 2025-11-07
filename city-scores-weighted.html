@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>City Category Scores - Weighted</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            padding: 20px;
+            background: #2c3e50;
+            color: white;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 10px;
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #16a085;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #e67e22;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        .view-label {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .view-info {
+            font-size: 14px;
+            opacity: 0.9;
+            text-align: center;
+        }
+
+        .weights-button {
+            background: #9b59b6;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: background 0.3s;
+            margin-top: 10px;
+        }
+
+        .weights-button:hover {
+            background: #8e44ad;
+        }
+
+        .weights-drawer {
+            background: #34495e;
+            color: white;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-out;
+        }
+
+        .weights-drawer.open {
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        .drawer-content {
+            padding: 20px;
+        }
+
+        .drawer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .preset-selector {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .preset-selector label {
+            font-weight: 600;
+        }
+
+        .preset-selector select {
+            padding: 8px 12px;
+            border-radius: 5px;
+            border: none;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .reset-button {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s;
+        }
+
+        .reset-button:hover {
+            background: #c0392b;
+        }
+
+        .weight-controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+        }
+
+        .weight-item {
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 5px;
+        }
+
+        .weight-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .weight-value {
+            font-weight: 700;
+            color: #3498db;
+        }
+
+        .weight-slider {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: rgba(255,255,255,0.3);
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .weight-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #3498db;
+            cursor: pointer;
+        }
+
+        .weight-slider::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #3498db;
+            cursor: pointer;
+            border: none;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+            padding: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        th, td {
+            padding: 12px 8px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        th {
+            background: #34495e;
+            color: white;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            white-space: nowrap;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        th:hover {
+            background: #4a6278;
+        }
+
+        th.sortable::after {
+            content: ' ⇅';
+            opacity: 0.5;
+            font-size: 10px;
+        }
+
+        th.sort-asc::after {
+            content: ' ↑';
+            opacity: 1;
+        }
+
+        th.sort-desc::after {
+            content: ' ↓';
+            opacity: 1;
+        }
+
+        .city-column {
+            font-weight: 600;
+            color: #2c3e50;
+            min-width: 150px;
+            position: sticky;
+            left: 0;
+            background: white;
+            z-index: 5;
+        }
+
+        th.city-column {
+            z-index: 15;
+            background: #34495e;
+        }
+
+        .score-cell {
+            text-align: center;
+            font-weight: 500;
+            min-width: 100px;
+        }
+
+        .score-bar {
+            height: 20px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+            transition: all 0.3s;
+        }
+
+        .score-bar:hover {
+            transform: scale(1.05);
+        }
+
+        .score-0-20 { background: linear-gradient(135deg, #e74c3c, #c0392b); }
+        .score-20-40 { background: linear-gradient(135deg, #e67e22, #d35400); }
+        .score-40-60 { background: linear-gradient(135deg, #f39c12, #e67e22); }
+        .score-60-80 { background: linear-gradient(135deg, #2ecc71, #27ae60); }
+        .score-80-100 { background: linear-gradient(135deg, #3498db, #2980b9); }
+
+        .no-data {
+            background: #ecf0f1;
+            color: #7f8c8d;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #7f8c8d;
+        }
+
+        .error {
+            text-align: center;
+            padding: 40px;
+            color: #e74c3c;
+        }
+
+        tr:hover {
+            background: #f8f9fa;
+        }
+
+        .population {
+            font-size: 12px;
+            color: #7f8c8d;
+            display: block;
+        }
+
+        .average-column {
+            font-weight: 700;
+            background: #e8f4f8;
+        }
+
+        th.average-column {
+            background: #16a085;
+        }
+
+        .weighted-column {
+            font-weight: 700;
+            background: #f3e5f5;
+        }
+
+        th.weighted-column {
+            background: #9b59b6;
+        }
+
+        /* Tooltip styling */
+        td[title] {
+            cursor: help;
+            position: relative;
+        }
+
+        td[title]:hover {
+            background: #e8f4f8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>City Category Scores - Weighted</h1>
+            <div class="controls">
+                <span class="view-label">Parent Categories</span>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="viewToggle" onchange="toggleView()">
+                    <span class="slider"></span>
+                </label>
+                <span class="view-label">Raw Categories</span>
+            </div>
+            <div class="view-info" id="viewInfo">
+                Viewing 15 parent categories (aggregated)
+            </div>
+            <div style="text-align: center;">
+                <button class="weights-button" onclick="toggleWeightsDrawer()">
+                    ⚖️ Customize Weights
+                </button>
+            </div>
+        </div>
+
+        <div class="weights-drawer" id="weightsDrawer">
+            <div class="drawer-content">
+                <div class="drawer-header">
+                    <div class="preset-selector">
+                        <label>Profile:</label>
+                        <select id="presetSelect" onchange="applyPreset()">
+                            <option value="equal">Equal Weights</option>
+                            <option value="small-children">Small Children</option>
+                            <option value="family">Family Life</option>
+                            <option value="retired">Retired People</option>
+                            <option value="culture">Culture</option>
+                            <option value="tourism">Tourism</option>
+                            <option value="youth">Youth</option>
+                        </select>
+                    </div>
+                    <button class="reset-button" onclick="resetWeights()">Reset to Equal</button>
+                </div>
+                <div class="weight-controls" id="weightControls"></div>
+            </div>
+        </div>
+
+        <div id="content">
+            <div class="loading">Loading data...</div>
+        </div>
+    </div>
+
+    <script>
+        let currentData = null;
+        let sortColumn = 'weighted';
+        let sortDirection = 'desc';
+        let currentView = 'parent';
+        let weights = {};
+        let drawerOpen = false;
+
+        // Preset profiles for parent categories
+        const presetsParent = {
+            'equal': {},
+            'small-children': {
+                'Education': 30,
+                'Health and Wellness': 25,
+                'Entertainment and Recreation': 20,
+                'Shopping': 15,
+                'Services': 10
+            },
+            'family': {
+                'Education': 25,
+                'Health and Wellness': 20,
+                'Shopping': 15,
+                'Entertainment and Recreation': 15,
+                'Housing': 15,
+                'Transportation': 10
+            },
+            'retired': {
+                'Health and Wellness': 30,
+                'Entertainment and Recreation': 20,
+                'Culture': 15,
+                'Shopping': 15,
+                'Transportation': 10,
+                'Services': 10
+            },
+            'culture': {
+                'Culture': 40,
+                'Entertainment and Recreation': 25,
+                'Food and Drink': 20,
+                'Lodging': 15
+            },
+            'tourism': {
+                'Entertainment and Recreation': 25,
+                'Culture': 20,
+                'Food and Drink': 20,
+                'Lodging': 20,
+                'Transportation': 15
+            },
+            'youth': {
+                'Entertainment and Recreation': 30,
+                'Food and Drink': 20,
+                'Shopping': 15,
+                'Culture': 15,
+                'Transportation': 10,
+                'Sports': 10
+            }
+        };
+
+        // Preset profiles for raw categories
+        const presetsRaw = {
+            'equal': {},
+            'small-children': {
+                'preschool': 25,
+                'primary_school': 20,
+                'park': 20,
+                'doctor': 15,
+                'hospital': 10,
+                'supermarket': 10
+            },
+            'family': {
+                'school': 20,
+                'primary_school': 15,
+                'secondary_school': 15,
+                'park': 15,
+                'supermarket': 10,
+                'doctor': 10,
+                'hospital': 10,
+                'apartment housing': 5
+            },
+            'retired': {
+                'doctor': 20,
+                'hospital': 15,
+                'pharmacies': 15,
+                'park': 15,
+                'museum': 10,
+                'restaurant': 10,
+                'supermarket': 10,
+                'bus stations stops taxis': 5
+            },
+            'culture': {
+                'museum': 30,
+                'performing_arts_theater': 25,
+                'culture alt': 20,
+                'restaurant': 15,
+                'hotel': 10
+            },
+            'tourism': {
+                'tourism alt': 20,
+                'museum': 15,
+                'hotel': 15,
+                'lodging': 15,
+                'restaurant': 15,
+                'park': 10,
+                'bus stations stops taxis': 10
+            },
+            'youth': {
+                'night_club': 20,
+                'bar cafe': 20,
+                'movie_theater': 15,
+                'park': 15,
+                'restaurant': 10,
+                'fitness gym': 10,
+                'sports alt': 10
+            }
+        };
+
+        async function loadData() {
+            try {
+                const response = await fetch(`api-raw.php?view=${currentView}`);
+                const data = await response.json();
+
+                if (!data.success) {
+                    throw new Error(data.error || 'Failed to load data');
+                }
+
+                currentData = data;
+                initializeWeights();
+                updateViewInfo();
+                renderWeightControls();
+                renderTable();
+            } catch (error) {
+                document.getElementById('content').innerHTML =
+                    `<div class="error">Error: ${error.message}</div>`;
+            }
+        }
+
+        function toggleView() {
+            const toggle = document.getElementById('viewToggle');
+            currentView = toggle.checked ? 'raw' : 'parent';
+            sortColumn = 'weighted';
+            sortDirection = 'desc';
+            loadData();
+        }
+
+        function toggleWeightsDrawer() {
+            drawerOpen = !drawerOpen;
+            const drawer = document.getElementById('weightsDrawer');
+            drawer.classList.toggle('open', drawerOpen);
+        }
+
+        function initializeWeights() {
+            weights = {};
+            currentData.categories.forEach(cat => {
+                weights[cat] = 1;
+            });
+        }
+
+        function updateViewInfo() {
+            const count = currentData.categories.length;
+            const type = currentView === 'parent' ? 'parent categories (aggregated)' : 'raw categories';
+            document.getElementById('viewInfo').textContent = `Viewing ${count} ${type}`;
+        }
+
+        function renderWeightControls() {
+            const container = document.getElementById('weightControls');
+            container.innerHTML = '';
+
+            currentData.categories.forEach(category => {
+                const displayName = currentView === 'raw' ? formatCategoryName(category) : category;
+                const weight = weights[category] || 1;
+
+                const item = document.createElement('div');
+                item.className = 'weight-item';
+                item.innerHTML = `
+                    <div class="weight-label">
+                        <span>${displayName}</span>
+                        <span class="weight-value" id="weight-${category}">${weight.toFixed(1)}x</span>
+                    </div>
+                    <input type="range"
+                           class="weight-slider"
+                           min="0"
+                           max="3"
+                           step="0.1"
+                           value="${weight}"
+                           oninput="updateWeight('${category}', this.value)">
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        function updateWeight(category, value) {
+            weights[category] = parseFloat(value);
+            document.getElementById(`weight-${category}`).textContent = value + 'x';
+            calculateWeightedScores();
+            sortData('weighted'); // Re-sort by weighted score
+        }
+
+        function resetWeights() {
+            initializeWeights();
+            renderWeightControls();
+            calculateWeightedScores();
+            sortColumn = 'weighted'; // Reset sort column
+            sortDirection = 'desc'; // Reset sort direction
+            sortData('weighted'); // Re-sort by weighted score
+            document.getElementById('presetSelect').value = 'equal';
+        }
+
+        function applyPreset() {
+            const preset = document.getElementById('presetSelect').value;
+            const presets = currentView === 'parent' ? presetsParent : presetsRaw;
+            const presetWeights = presets[preset];
+
+            // Reset all to 1 first
+            initializeWeights();
+
+            // Apply preset weights
+            if (preset !== 'equal') {
+                Object.keys(presetWeights).forEach(cat => {
+                    if (weights.hasOwnProperty(cat)) {
+                        weights[cat] = presetWeights[cat] / 10; // Convert to multiplier
+                    }
+                });
+            }
+
+            renderWeightControls();
+            calculateWeightedScores();
+            sortColumn = 'weighted'; // Reset sort column
+            sortDirection = 'desc'; // Reset sort direction
+            sortData('weighted'); // Re-sort by weighted score
+        }
+
+        function calculateWeightedScores() {
+            currentData.cities.forEach(city => {
+                let totalWeightedScore = 0;
+                let totalWeight = 0;
+
+                currentData.categories.forEach(category => {
+                    const score = city.scores[category];
+                    const weight = weights[category] || 1;
+
+                    if (score !== null && score !== undefined) {
+                        totalWeightedScore += score * weight;
+                        totalWeight += weight;
+                    }
+                });
+
+                city.weighted_score = totalWeight > 0 ?
+                    Math.round((totalWeightedScore / totalWeight) * 100) / 100 : null;
+            });
+        }
+
+        function getScoreClass(score) {
+            if (score === null || score === undefined) return 'no-data';
+            if (score >= 80) return 'score-80-100';
+            if (score >= 60) return 'score-60-80';
+            if (score >= 40) return 'score-40-60';
+            if (score >= 20) return 'score-20-40';
+            return 'score-0-20';
+        }
+
+        function formatScore(score) {
+            if (score === null || score === undefined) return 'N/A';
+            return score.toFixed(1);
+        }
+
+        function formatPopulation(pop) {
+            if (!pop) return '';
+            return pop.toLocaleString();
+        }
+
+        function formatCategoryName(category) {
+            return category.replace(/_/g, ' ')
+                          .split(' ')
+                          .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                          .join(' ');
+        }
+
+        function sortData(column) {
+            // If clicking the same column, toggle direction
+            // Otherwise, set new column and default to desc (higher numbers on top)
+            if (sortColumn === column) {
+                sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+            } else {
+                sortColumn = column;
+                sortDirection = 'desc'; // Always start with highest values on top
+            }
+
+            const cities = [...currentData.cities];
+
+            cities.sort((a, b) => {
+                let valA, valB;
+
+                if (column === 'city') {
+                    valA = a.name.toLowerCase();
+                    valB = b.name.toLowerCase();
+                } else if (column === 'population') {
+                    valA = a.population || 0;
+                    valB = b.population || 0;
+                } else if (column === 'average') {
+                    valA = a.average_score !== null ? a.average_score : -1;
+                    valB = b.average_score !== null ? b.average_score : -1;
+                } else if (column === 'weighted') {
+                    valA = a.weighted_score !== null ? a.weighted_score : -1;
+                    valB = b.weighted_score !== null ? b.weighted_score : -1;
+                } else {
+                    valA = a.scores[column] !== null ? a.scores[column] : -1;
+                    valB = b.scores[column] !== null ? b.scores[column] : -1;
+                }
+
+                // Sort logic: for desc, higher values come first (return 1 if a < b)
+                if (valA < valB) return sortDirection === 'asc' ? -1 : 1;
+                if (valA > valB) return sortDirection === 'asc' ? 1 : -1;
+                return 0;
+            });
+
+            currentData.cities = cities;
+            renderTable();
+        }
+
+        function renderTable() {
+            const { categories, cities } = currentData;
+            let html = '<div class="table-wrapper"><table>';
+
+            // Header
+            html += '<thead><tr>';
+            html += `<th class="city-column sortable ${sortColumn === 'city' ? 'sort-' + sortDirection : ''}"
+                        onclick="sortData('city')">City</th>`;
+            html += `<th class="weighted-column score-cell sortable ${sortColumn === 'weighted' ? 'sort-' + sortDirection : ''}"
+                        onclick="sortData('weighted')">Weighted</th>`;
+            html += `<th class="average-column score-cell sortable ${sortColumn === 'average' ? 'sort-' + sortDirection : ''}"
+                        onclick="sortData('average')">Average</th>`;
+            categories.forEach(category => {
+                const displayName = currentView === 'raw' ? formatCategoryName(category) : category;
+                html += `<th class="score-cell sortable ${sortColumn === category ? 'sort-' + sortDirection : ''}"
+                            onclick="sortData('${category}')">${displayName}</th>`;
+            });
+            html += '</tr></thead>';
+
+            // Body
+            html += '<tbody>';
+            cities.forEach(city => {
+                html += '<tr>';
+                html += `<td class="city-column">
+                    <strong>${city.name}</strong>
+                    <span class="population">${formatPopulation(city.population)} people</span>
+                </td>`;
+
+                // Weighted score column
+                const weightedScore = city.weighted_score;
+                const weightedClass = getScoreClass(weightedScore);
+                html += `<td class="weighted-column score-cell">
+                    <div class="score-bar ${weightedClass}">
+                        ${formatScore(weightedScore)}
+                    </div>
+                </td>`;
+
+                // Average score column
+                const avgScore = city.average_score;
+                const avgClass = getScoreClass(avgScore);
+                html += `<td class="average-column score-cell">
+                    <div class="score-bar ${avgClass}">
+                        ${formatScore(avgScore)}
+                    </div>
+                </td>`;
+
+                categories.forEach(category => {
+                    const score = city.scores[category];
+                    const scoreClass = getScoreClass(score);
+                    const count = city.counts ? city.counts[category] : null;
+                    const population = city.population || 1;
+                    const perThousand = count !== null ? (count / population * 1000).toFixed(2) : null;
+
+                    let tooltip = '';
+                    if (count !== null) {
+                        tooltip = `Raw count: ${count}\\nPer 1,000 citizens: ${perThousand}`;
+                    }
+
+                    html += `<td class="score-cell" ${tooltip ? `title="${tooltip}"` : ''}>
+                        <div class="score-bar ${scoreClass}">
+                            ${formatScore(score)}
+                        </div>
+                    </td>`;
+                });
+
+                html += '</tr>';
+            });
+            html += '</tbody>';
+
+            html += '</table></div>';
+            document.getElementById('content').innerHTML = html;
+        }
+
+        // Load data on page load
+        loadData();
+    </script>
+</body>
+</html>
