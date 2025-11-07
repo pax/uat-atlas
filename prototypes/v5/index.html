@@ -607,7 +607,7 @@
         function toggleView() {
             const toggle = document.getElementById('viewToggle');
             currentView = toggle.checked ? 'raw' : 'parent';
-            sortColumn = 'weighted';
+            sortColumn = null; // Reset to force descending sort
             sortDirection = 'desc';
             loadData();
         }
@@ -615,7 +615,14 @@
         function toggleWeightsDrawer() {
             drawerOpen = !drawerOpen;
             const drawer = document.getElementById('weightsDrawer');
+            const button = document.querySelector('.weights-button');
             drawer.classList.toggle('open', drawerOpen);
+
+            if (drawerOpen) {
+                button.textContent = '✕ Close Customizer';
+            } else {
+                button.textContent = '⚖️ Customize Weights';
+            }
         }
 
         function initializeWeights() {
