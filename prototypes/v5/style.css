@@ -251,6 +251,10 @@
             white-space: nowrap;
             cursor: pointer;
             user-select: none;
+            max-width: 80px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            padding: 8px 4px;
         }
 
         th:hover {
@@ -291,22 +295,26 @@
         .score-cell {
             text-align: center;
             font-weight: 500;
-            min-width: 100px;
+            width: 80px;
+            max-width: 80px;
+            padding: 0 !important;
         }
 
         .score-bar {
-            height: 20px;
-            border-radius: 4px;
+            height: 100%;
+            width: 100%;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
             font-size: 12px;
-            transition: all 0.3s;
+            font-weight: 600;
+            padding: 12px 4px;
+            transition: all 0.2s;
         }
 
         .score-bar:hover {
-            transform: scale(1.05);
+            filter: brightness(1.1);
         }
 
         .score-0-20 { background: linear-gradient(135deg, #e74c3c, #c0392b); }
@@ -344,7 +352,10 @@
 
         .average-column {
             font-weight: 700;
-            background: #e8f4f8;
+            width: 80px;
+            max-width: 80px;
+            padding: 0 !important;
+            background: transparent !important;
         }
 
         th.average-column {
@@ -353,11 +364,20 @@
 
         .weighted-column {
             font-weight: 700;
-            background: #f3e5f5;
+            width: 80px;
+            max-width: 80px;
+            padding: 0 !important;
+            background: transparent !important;
         }
 
         th.weighted-column {
             background: #9b59b6;
+        }
+
+        /* Ensure row hover doesn't override cell backgrounds */
+        tr:hover .average-column,
+        tr:hover .weighted-column {
+            background: transparent !important;
         }
 
         /* Tooltip styling */
@@ -366,8 +386,8 @@
             position: relative;
         }
 
-        .score-cell[title]:hover {
-            background: #e8f4f8;
+        th[title] {
+            cursor: help;
         }
 
         /* Custom tooltip */
@@ -414,4 +434,9 @@
         .score-cell[title]:hover::before {
             opacity: 1;
         }
-    
+        
+        th.weighted-column,th.average-column,
+        th.score-cell {background: #9b59b6 !important;}
+        th.score-cell.sort-desc {background: #9b59a6 !important;}
+        th.score-cell.sort-asc {background: #2b99b6 !important;}
+        th.city-column {background-color: whitesmoke;}
