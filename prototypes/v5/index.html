@@ -470,7 +470,7 @@
 
     <script>
         let currentData = null;
-        let sortColumn = 'weighted';
+        let sortColumn = null;
         let sortDirection = 'desc';
         let currentView = 'parent';
         let weights = {};
@@ -662,6 +662,8 @@
             weights[category] = parseFloat(value);
             document.getElementById(`weight-${category}`).textContent = value + 'x';
             calculateWeightedScores();
+            // Force descending sort without toggling
+            sortColumn = null;
             sortData('weighted'); // Re-sort by weighted score
         }
 
@@ -669,8 +671,8 @@
             initializeWeights();
             renderWeightControls();
             calculateWeightedScores();
-            sortColumn = 'weighted'; // Reset sort column
-            sortDirection = 'desc'; // Reset sort direction
+            // Force descending sort without toggling
+            sortColumn = null;
             sortData('weighted'); // Re-sort by weighted score
             document.getElementById('presetSelect').value = 'equal';
         }
@@ -694,8 +696,8 @@
 
             renderWeightControls();
             calculateWeightedScores();
-            sortColumn = 'weighted'; // Reset sort column
-            sortDirection = 'desc'; // Reset sort direction
+            // Force descending sort without toggling
+            sortColumn = null;
             sortData('weighted'); // Re-sort by weighted score
         }
 
