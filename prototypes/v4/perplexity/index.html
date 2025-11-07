@@ -923,8 +923,9 @@ print('Wrote city_data_export.json with', len(cities_out), 'cities')
         // Fetch default data file from same folder (city_data_export.json)
         async function fetchDefaultData() {
             const candidates = [
-                './city_data_export.json',
-                '/prototypes/v4/perplexity/city_data_export.json'
+                '../../../data/v4-perplexity-city_data_export.json',
+                // './city_data_export.json',
+                // '/prototypes/v4/perplexity/city_data_export.json'
             ];
 
             for (const url of candidates) {

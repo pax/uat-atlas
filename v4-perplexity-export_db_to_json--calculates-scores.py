@@ -7,7 +7,7 @@ import sqlite3
 import json
 from collections import defaultdict
 
-def export_cities_db(db_path='cities.db', output_path='city_data_export.json'):
+def export_cities_db(db_path='data/cities.db', output_path='data/v4-perplexity-city_data_export.json'):
     """
     Export city data from SQLite database to JSON format.
     
