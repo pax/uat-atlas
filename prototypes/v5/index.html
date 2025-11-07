@@ -378,7 +378,7 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>City Category Scores - Weighted</h1>
+            <!-- <h1>City Category Scores - Weighted</h1> -->
             <div class="controls">
                 <span class="view-label">Parent Categories</span>
                 <label class="toggle-switch">
@@ -540,7 +540,7 @@
 
         async function loadData() {
             try {
-                const response = await fetch(`api-raw.php?view=${currentView}`);
+                const response = await fetch(`../../api-raw.php?view=${currentView}`);
                 const data = await response.json();
 
                 if (!data.success) {
