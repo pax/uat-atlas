@@ -365,13 +365,58 @@
         }
 
         /* Tooltip styling */
-        td[title] {
+        .score-cell[title] {
             cursor: help;
             position: relative;
         }
 
-        td[title]:hover {
+        .score-cell[title]:hover {
             background: #e8f4f8;
+        }
+
+        /* Custom tooltip */
+        .score-cell[title]::after {
+            content: attr(title);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #2c3e50;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            white-space: pre-line;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+            z-index: 1000;
+            min-width: 180px;
+            text-align: left;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+
+        .score-cell[title]:hover::after {
+            opacity: 1;
+        }
+
+        /* Tooltip arrow */
+        .score-cell[title]::before {
+            content: '';
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%) translateY(6px);
+            border: 6px solid transparent;
+            border-top-color: #2c3e50;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+            z-index: 1000;
+        }
+
+        .score-cell[title]:hover::before {
+            opacity: 1;
         }
     </style>
 </head>
@@ -795,12 +840,13 @@
                     const population = city.population || 1;
                     const perThousand = count !== null ? (count / population * 1000).toFixed(2) : null;
 
-                    let tooltip = '';
+                    let tooltipAttr = '';
                     if (count !== null) {
-                        tooltip = `Raw count: ${count}&#10;Per 1,000 citizens: ${perThousand}`;
+                        const tooltipText = `Count: ${count}\n${perThousand} / 1k people`;
+                        tooltipAttr = ` title="${tooltipText}"`;
                     }
 
-                    html += `<td class="score-cell" ${tooltip ? `title="${tooltip}"` : ''}>
+                    html += `<td class="score-cell"${tooltipAttr}>
                         <div class="score-bar ${scoreClass}">
                             ${formatScore(score)}
                         </div>
