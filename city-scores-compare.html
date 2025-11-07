@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>City Category Scores</title>
+    <title>City Category Scores - Comparison</title>
     <style>
         * {
             margin: 0;
@@ -26,10 +26,78 @@
             overflow: hidden;
         }
 
-        h1 {
+        .header {
             padding: 20px;
             background: #2c3e50;
             color: white;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #16a085;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #e67e22;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        .view-label {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .view-info {
+            font-size: 14px;
+            opacity: 0.9;
             text-align: center;
         }
 
@@ -163,7 +231,20 @@
 </head>
 <body>
     <div class="container">
-        <h1>City Category Scores</h1>
+        <div class="header">
+            <h1>City Category Scores - Comparison</h1>
+            <div class="controls">
+                <span class="view-label">Parent Categories</span>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="viewToggle" onchange="toggleView()">
+                    <span class="slider"></span>
+                </label>
+                <span class="view-label">Raw Categories</span>
+            </div>
+            <div class="view-info" id="viewInfo">
+                Viewing 15 parent categories (aggregated)
+            </div>
+        </div>
         <div id="content">
             <div class="loading">Loading data...</div>
         </div>
@@ -173,10 +254,11 @@
         let currentData = null;
         let sortColumn = null;
         let sortDirection = 'desc';
+        let currentView = 'parent';
 
         async function loadData() {
             try {
-                const response = await fetch('api.php');
+                const response = await fetch(`api-raw.php?view=${currentView}`);
                 const data = await response.json();
 
                 if (!data.success) {
@@ -184,11 +266,26 @@
                 }
 
                 currentData = data;
+                updateViewInfo();
                 renderTable();
             } catch (error) {
                 document.getElementById('content').innerHTML =
                     `<div class="error">Error: ${error.message}</div>`;
             }
+        }
+
+        function toggleView() {
+            const toggle = document.getElementById('viewToggle');
+            currentView = toggle.checked ? 'raw' : 'parent';
+            sortColumn = null;
+            sortDirection = 'desc';
+            loadData();
+        }
+
+        function updateViewInfo() {
+            const count = currentData.categories.length;
+            const type = currentView === 'parent' ? 'parent categories (aggregated)' : 'raw categories';
+            document.getElementById('viewInfo').textContent = `Viewing ${count} ${type}`;
         }
 
         function getScoreClass(score) {
@@ -208,6 +305,14 @@
         function formatPopulation(pop) {
             if (!pop) return '';
             return pop.toLocaleString();
+        }
+
+        function formatCategoryName(category) {
+            // Convert underscores to spaces and capitalize
+            return category.replace(/_/g, ' ')
+                          .split(' ')
+                          .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                          .join(' ');
         }
 
         function sortData(column) {
@@ -259,8 +364,9 @@
             html += `<th class="average-column score-cell sortable ${sortColumn === 'average' ? 'sort-' + sortDirection : ''}"
                         onclick="sortData('average')">Average</th>`;
             categories.forEach(category => {
+                const displayName = currentView === 'raw' ? formatCategoryName(category) : category;
                 html += `<th class="score-cell sortable ${sortColumn === category ? 'sort-' + sortDirection : ''}"
-                            onclick="sortData('${category}')">${category}</th>`;
+                            onclick="sortData('${category}')">${displayName}</th>`;
             });
             html += '</tr></thead>';
 
