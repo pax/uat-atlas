@@ -128,31 +128,34 @@
         }
 
         .drawer-content {
-            padding: 20px;
+            padding: 15px;
         }
 
         .drawer-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
         .preset-selector {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
         }
 
         .preset-selector label {
             font-weight: 600;
+            font-size: 13px;
         }
 
         .preset-selector select {
-            padding: 8px 12px;
+            padding: 6px 10px;
             border-radius: 5px;
             border: none;
-            font-size: 14px;
+            font-size: 13px;
             cursor: pointer;
         }
 
@@ -160,10 +163,10 @@
             background: #e74c3c;
             color: white;
             border: none;
-            padding: 8px 16px;
+            padding: 6px 12px;
             border-radius: 5px;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 13px;
             transition: background 0.3s;
         }
 
@@ -173,26 +176,27 @@
 
         .weight-controls {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 15px;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 10px;
         }
 
         .weight-item {
             background: rgba(255,255,255,0.1);
-            padding: 15px;
+            padding: 10px 12px;
             border-radius: 5px;
         }
 
         .weight-label {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 8px;
-            font-size: 14px;
+            margin-bottom: 6px;
+            font-size: 13px;
         }
 
         .weight-value {
             font-weight: 700;
             color: #3498db;
+            font-size: 13px;
         }
 
         .weight-slider {
