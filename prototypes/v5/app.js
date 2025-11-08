@@ -260,11 +260,16 @@ function calculateWeightedScores() {
 
 function getScoreClass(score) {
     if (score === null || score === undefined) return 'no-data';
-    if (score >= 80) return 'score-80-100';
-    if (score >= 60) return 'score-60-80';
-    if (score >= 40) return 'score-40-60';
-    if (score >= 20) return 'score-20-40';
-    return 'score-0-20';
+    if (score >= 90) return 'score-90-100';
+    if (score >= 80) return 'score-80-90';
+    if (score >= 70) return 'score-70-80';
+    if (score >= 60) return 'score-60-70';
+    if (score >= 50) return 'score-50-60';
+    if (score >= 40) return 'score-40-50';
+    if (score >= 30) return 'score-30-40';
+    if (score >= 20) return 'score-20-30';
+    if (score >= 10) return 'score-10-20';
+    return 'score-0-10';
 }
 
 function formatScore(score) {
