@@ -179,10 +179,8 @@ function renderWeightControls() {
         const item = document.createElement('div');
         item.className = 'weight-item';
         item.innerHTML = `
-                    <div class="weight-label">
-                        <span>${displayName}</span>
-                        <span class="weight-value" id="weight-${category}">${weight.toFixed(1)}x</span>
-                    </div>
+                    <span class="weight-label">${displayName}</span>
+                    <span class="weight-value" id="weight-${category}">${weight.toFixed(1)}x</span>
                     <input type="range"
                            class="weight-slider"
                            min="0"
