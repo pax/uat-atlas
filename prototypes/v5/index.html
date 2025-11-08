@@ -342,6 +342,10 @@
         }
 
         function sortData(column) {
+            // Save current scroll position
+            const tableWrapper = document.querySelector('.table-wrapper');
+            const scrollLeft = tableWrapper ? tableWrapper.scrollLeft : 0;
+
             // If clicking the same column, toggle direction
             // Otherwise, set new column and default to desc (higher numbers on top)
             if (sortColumn === column) {
@@ -381,6 +385,14 @@
 
             currentData.cities = cities;
             renderTable();
+
+            // Restore scroll position after render
+            requestAnimationFrame(() => {
+                const newTableWrapper = document.querySelector('.table-wrapper');
+                if (newTableWrapper) {
+                    newTableWrapper.scrollLeft = scrollLeft;
+                }
+            });
         }
 
         function renderTable() {
@@ -414,7 +426,8 @@
                 // Weighted score column
                 const weightedScore = city.weighted_score;
                 const weightedClass = getScoreClass(weightedScore);
-                html += `<td class="weighted-column score-cell">
+                const isWeightedActive = sortColumn === 'weighted';
+                html += `<td class="weighted-column score-cell ${isWeightedActive ? 'active-sort-column' : ''}">
                     <div class="score-bar ${weightedClass}">
                         ${formatScore(weightedScore)}
                     </div>
@@ -423,7 +436,8 @@
                 // Average score column
                 const avgScore = city.average_score;
                 const avgClass = getScoreClass(avgScore);
-                html += `<td class="average-column score-cell">
+                const isAverageActive = sortColumn === 'average';
+                html += `<td class="average-column score-cell ${isAverageActive ? 'active-sort-column' : ''}">
                     <div class="score-bar ${avgClass}">
                         ${formatScore(avgScore)}
                     </div>
@@ -442,7 +456,8 @@
                         tooltipAttr = ` title="${tooltipText}"`;
                     }
 
-                    html += `<td class="score-cell"${tooltipAttr}>
+                    const isActiveColumn = category === sortColumn;
+                    html += `<td class="score-cell ${isActiveColumn ? 'active-sort-column' : ''}"${tooltipAttr}>
                         <div class="score-bar ${scoreClass}">
                             ${formatScore(score)}
                         </div>
