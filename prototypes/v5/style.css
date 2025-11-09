@@ -196,6 +196,12 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            cursor: help;
+            position: relative;
+        }
+
+        .weight-label[title]:hover {
+            text-decoration: underline;
         }
 
         .weight-value {
@@ -241,7 +247,7 @@
         }
 
         table {
-            width: 100%;
+            width: auto;
             border-collapse: collapse;
             font-size: 14px;
         }
@@ -291,13 +297,13 @@
         .city-column {
             font-weight: 600;
             color: #2c3e50;
-            /* min-width: 150px; */
-            min-width: 9em;
+            width: auto;
+            white-space: nowrap;
             position: sticky;
             left: 0;
             background: white;
             z-index: 5;
-            
+            padding: 4px 8px !important;
         }
         .city-column strong {
 /* letter-spacing: -1px;  */
@@ -410,6 +416,75 @@
 
         th[title] {
             cursor: help;
+            position: relative;
+        }
+
+        /* Custom tooltip for table headers */
+        th[title]::after {
+            content: attr(title);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #2c3e50;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            white-space: pre-line;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+            z-index: 1000;
+            min-width: 180px;
+            text-align: left;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            font-weight: normal;
+        }
+
+        th[title]:hover::after {
+            opacity: 1;
+        }
+
+        th[title]::before {
+            content: '';
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%) translateY(6px);
+            border: 6px solid transparent;
+            border-top-color: #2c3e50;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+            z-index: 1000;
+        }
+
+        th[title]:hover::before {
+            opacity: 1;
+        }
+
+        /* Custom tooltip for weight labels */
+        .weight-label[title]::after {
+            content: attr(title);
+            position: absolute;
+            bottom: 100%;
+            left: 0;
+            background: #2c3e50;
+            color: white;
+            padding: 6px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+            z-index: 1000;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+
+        .weight-label[title]:hover::after {
+            opacity: 1;
         }
 
         /* Custom tooltip */

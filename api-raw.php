@@ -11,13 +11,23 @@ try {
     $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
     if ($viewType === 'raw') {
-        // Get all raw categories
+        // Get all raw categories with their slugs
         $categoriesStmt = $db->query("
-            SELECT DISTINCT category
-            FROM city_stats
-            ORDER BY category
+            SELECT DISTINCT Category as category, ctg_slugs
+            FROM categories
+            ORDER BY Category
         ");
-        $categories = $categoriesStmt->fetchAll(PDO::FETCH_COLUMN);
+        $categoryData = $categoriesStmt->fetchAll(PDO::FETCH_ASSOC);
+
+        // Extract category names and create metadata
+        $categories = [];
+        $categoryMetadata = [];
+        foreach ($categoryData as $row) {
+            $categories[] = $row['category'];
+            $categoryMetadata[$row['category']] = [
+                'slugs' => $row['ctg_slugs']
+            ];
+        }
 
         // Get cities with their raw category scores and counts
         $citiesStmt = $db->query("
@@ -81,11 +91,22 @@ try {
     } else {
         // Parent category view (original functionality)
         $categoriesStmt = $db->query("
-            SELECT DISTINCT parent_category
+            SELECT parent_category, GROUP_CONCAT(Category, ', ') as child_categories
             FROM categories
+            GROUP BY parent_category
             ORDER BY parent_category
         ");
-        $categories = $categoriesStmt->fetchAll(PDO::FETCH_COLUMN);
+        $categoryData = $categoriesStmt->fetchAll(PDO::FETCH_ASSOC);
+
+        // Extract category names and create metadata
+        $categories = [];
+        $categoryMetadata = [];
+        foreach ($categoryData as $row) {
+            $categories[] = $row['parent_category'];
+            $categoryMetadata[$row['parent_category']] = [
+                'children' => $row['child_categories']
+            ];
+        }
 
         // Get cities with their scores aggregated by parent category
         $citiesStmt = $db->query("
@@ -153,6 +174,7 @@ try {
         'success' => true,
         'view' => $viewType,
         'categories' => $categories,
+        'categoryMetadata' => $categoryMetadata,
         'cities' => $cities
     ], JSON_PRETTY_PRINT);
 

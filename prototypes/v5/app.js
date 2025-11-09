@@ -5,6 +5,7 @@ let sortDirection = 'desc';
 let currentView = 'parent';
 let weights = {};
 let drawerOpen = false;
+let categoryMetadata = {};
 
 // Preset profiles for parent categories
 const presetsParent = {
@@ -123,6 +124,7 @@ async function loadData() {
         }
 
         currentData = data;
+        categoryMetadata = data.categoryMetadata || {};
         initializeWeights();
         calculateWeightedScores(); // Calculate initial weighted scores with equal weights
         updateViewInfo();
@@ -176,10 +178,20 @@ function renderWeightControls() {
         const displayName = currentView === 'raw' ? formatCategoryName(category) : category;
         const weight = weights[category] || 1;
 
+        // Get tooltip from metadata
+        let tooltip = '';
+        if (categoryMetadata[category]) {
+            if (currentView === 'parent' && categoryMetadata[category].children) {
+                tooltip = categoryMetadata[category].children.replace(/_/g, ' ');
+            } else if (currentView === 'raw' && categoryMetadata[category].slugs) {
+                tooltip = categoryMetadata[category].slugs;
+            }
+        }
+
         const item = document.createElement('div');
         item.className = 'weight-item';
         item.innerHTML = `
-                    <span class="weight-label">${displayName}</span>
+                    <span class="weight-label" title="${tooltip}">${displayName}</span>
                     <span class="weight-value" id="weight-${category}">${weight.toFixed(1)}x</span>
                     <input type="range"
                            class="weight-slider"
@@ -355,7 +367,19 @@ function renderTable() {
                         onclick="sortData('average')">Average</th>`;
     categories.forEach(category => {
         const displayName = currentView === 'raw' ? formatCategoryName(category) : category;
+
+        // Get tooltip from metadata
+        let tooltip = '';
+        if (categoryMetadata[category]) {
+            if (currentView === 'parent' && categoryMetadata[category].children) {
+                tooltip = categoryMetadata[category].children.replace(/_/g, ' ');
+            } else if (currentView === 'raw' && categoryMetadata[category].slugs) {
+                tooltip = categoryMetadata[category].slugs;
+            }
+        }
+
         html += `<th class="score-cell sortable ${sortColumn === category ? 'sort-' + sortDirection : ''}"
+                            title="${tooltip}"
                             onclick="sortData('${category}')">${displayName}</th>`;
     });
     html += '</tr></thead>';
