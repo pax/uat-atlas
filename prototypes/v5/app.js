@@ -422,7 +422,7 @@ function renderTable() {
 
             let tooltipAttr = '';
             if (count !== null) {
-                const tooltipText = `Count: ${count}\n${perThousand} / 1k people`;
+                const tooltipText = `${count} ${category}\n${perThousand} / 1k people`;
                 tooltipAttr = ` title="${tooltipText}"`;
             }
 
