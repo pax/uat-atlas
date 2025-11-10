@@ -2,9 +2,9 @@
 
 City profile and comparisons based on number of venues
 
-
 Answer questions like: I want to move to ?
 
+prototype: [uat.gov2.ro/atlas](https://uat.gov2.ro/atlas/)
 
 use data fetched with [pax/gis-places-osint](https://github.com/pax/gis-places-osint)
 
@@ -25,28 +25,28 @@ create city profiles, maps
     - [x] read data from db/api?
     - [x] how to calculate scores?-
     - [x] norm to population
-    - [ ] use <prototypes/claude/> - use views (scores) instead of absolute counts. Disply normed to pop.
-- [ ] split categories by parent categories / grouping
+- [x] split categories by parent categories / grouping
+- [x] weighted scores
 - [ ] icons for categories
 
-- [ ] add INS data
+- [ ] add INS + OSM data
 - [ ] multi lang
 - [ ] text to sql - hugginface trained model
 - [ ] Reddit threads - vreau să mă mut în <City>
 
-see <prototypes/claude/> (php api) and <prototypes/perplexity/> (exported static jsons)
+
 
 see [reference/brainstorming/]
 
 ## Views
 
-- landing
-- city profile
-- overall multi-city table
-- Side-by-side comparison
-- Criteria builder
-- rankings/reports
-- static: about, contact, methodology
+- [ ] landing
+- [ ] city profile
+- [x] overall multi-city table
+- [ ] Side-by-side comparison
+- [ ] Criteria builder
+- [ ] rankings/reports
+- [ ] static: about, contact, methodology
 
 
 ### Landing
@@ -77,6 +77,3 @@ pre-built sample criterias (kids friendly, nighltife, culture, retirement)
 
 Custom dashboards, lists - best city for ..
 
-
-## Notes
-<https://github.com/claudio-silva/claude-artifact-runner>
