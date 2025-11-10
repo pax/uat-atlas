@@ -307,7 +307,7 @@ function getScoreClass(score) {
 
 function formatScore(score) {
     if (score === null || score === undefined) return 'N/A';
-    return score.toFixed(1);
+    return score.toFixed(0);
 }
 
 function formatPopulation(pop) {

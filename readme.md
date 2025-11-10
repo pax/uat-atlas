@@ -19,6 +19,7 @@ Ranks cities based on venue / services counts and other attributs (ex: non stop 
 - [x] split categories by parent categories / grouping
 - [x] weighted scores
 - [ ] icons for categories
+- [ ] fine-tune ranking profiles
 
 ### Later
 
