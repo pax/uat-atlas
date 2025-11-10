@@ -1,0 +1,42 @@
+parent-category,my_ctg-slug,ctg-slugs
+Automotive,electric_vehicle_charging_station,electric_vehicle_charging_station
+Automotive,gas_station,gas_station
+Automotive,parking,parking
+Culture,museum,museum
+Culture,performing_arts_theater,performing_arts_theater
+Education,preschool,preschool
+Education,primary_school,primary_school
+Education,school,school
+Education,secondary_school,secondary_school
+Education,university,university
+Entertainment and Recreation,movie_theater,movie_theater
+Entertainment and Recreation,night_club,night_club
+Entertainment and Recreation,park,park
+Entertainment and Recreation,tourism alt,"wildlife_park, wildlife_refuge, zoo, visitor_center, garden, hiking_area, amusement_center, amusement_park, cultural_landmark, historical_place, monument, historical_landmark, tourist_attraction, picnic_ground, karaoke, skateboard_park, car_rental, water_park"
+Entertainment and Recreation,culture alt,"cultural_center, event_venue, opera_house, philharmonic_hall, amphitheatre, art_gallery, auditorium"
+Finance,atm bank,"atm, bank"
+Food and Drink,bar cafe,"bar, cafe"
+Food and Drink,restaurant,restaurant
+Food and Drink,cuisine high,"ice_cream_shop, indian_restaurant, indonesian_restaurant, italian_restaurant, japanese_restaurant, french_restaurant, greek_restaurant, fine_dining_restaurant, seafood_restaurant, spanish_restaurant, steak_house, sushi_restaurant, tea_house, thai_restaurant, turkish_restaurant, vegan_restaurant, vegetarian_restaurant, vietnamese_restaurant, wine_bar"
+Food and Drink,easy food,"fast_food_restaurant, food_court, pizza_restaurant, sandwich_shop"
+Government,police,police
+Health and Wellness,doctor,doctor
+Health and Wellness,hospital,hospital
+Health and Wellness,health and beauty,"wellness_center, physiotherapist, barber_shop, beautician, beauty_salon, massage, spa, tanning_studio"
+Health and Wellness,dental,"dental_clinic, dentist"
+Health and Wellness,pharmacies,"drugstore, pharmacy"
+Housing,apartment housing,"apartment_building, apartment_complex, housing_complex"
+Lodging,hotel,hotel
+Lodging,lodging,lodging
+Lodging,lodging alt,"guest_house, hostel, motel, bed_and_breakfast, camping_cabin, cottage"
+Places of Worship,church,church
+Services,food_delivery,food_delivery
+Services,veterinary_care,veterinary_care
+Shopping,shopping_mall,shopping_mall
+Shopping,store,store
+Shopping,supermarket,supermarket
+Shopping,stores alt,"convenience_store, department_store, food_store, grocery_store, market, pet_store"
+Shopping,home improvement,"hardware_store, home_goods_store, home_improvement_store"
+Sports,fitness gym,"gym, fitness_center"
+Sports,sports alt,"arena, athletic_field, fishing_charter, fishing_pond, golf_course, ice_skating_rink, playground, ski_resort, sports_activity_location, sports_club, sports_coaching, sports_complex, stadium, swimming_pool"
+Transportation,bus stations stops taxis,"bus_station, bus_stop, taxi_stand"

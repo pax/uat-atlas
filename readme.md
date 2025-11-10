@@ -1,23 +1,14 @@
 # City Atlas
 
-City profile and comparisons based on number of venues
+City profile and comparisons based on number of attributes.
 
-Answer questions like: I want to move to ?
+Answer questions like: I want to move to ? Prototype: [uat.gov2.ro/atlas](https://uat.gov2.ro/atlas/). Data fetched with [pax/gis-places-osint](https://github.com/pax/gis-places-osint)
 
-prototype: [uat.gov2.ro/atlas](https://uat.gov2.ro/atlas/)
-
-use data fetched with [pax/gis-places-osint](https://github.com/pax/gis-places-osint)
-
-- non stop shops
-- pharmacies, non stop
-- bars, cafes
-- cinema
-- theaters, cinemas, museums
-- public toilets
-
-create city profiles, maps 
+Ranks cities based on venue / services counts and other attributs (ex: non stop shops, pharmacies, non stop, bars, cafes, cinema, theaters, cinemas, museums, public toilets etc). see [venue types](reference/places-api-queries.csv)
 
 ![v5](reference/misc/ui-v5.png)
+
+---
 
 ## Roadmap
 - [x] MPV UI
@@ -33,8 +24,6 @@ create city profiles, maps
 - [ ] multi lang
 - [ ] text to sql - hugginface trained model
 - [ ] Reddit threads - vreau să mă mut în <City>
-
-
 
 see [reference/brainstorming/]
 
