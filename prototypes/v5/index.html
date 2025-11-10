@@ -10,7 +10,6 @@
 <body>
     <div class="container">
         <div class="header">
-            <!-- <h1>City Category Scores - Weighted</h1> -->
             <div class="controls">
                 <span class="view-label">Domenii</span>
                 <label class="toggle-switch">
@@ -19,7 +18,7 @@
                 </label>
                 <span class="view-label">Category</span>
             </div>
-            <div class="controls" style="margin-top: 10px;">
+            <div class="controls">
                 <span class="view-label">Score</span>
                 <label class="toggle-switch">
                     <input type="checkbox" id="displayModeToggle" onchange="toggleDisplayMode()">
@@ -27,14 +26,13 @@
                 </label>
                 <span class="view-label">Absolute</span>
             </div>
+            <button class="weights-button" onclick="toggleWeightsDrawer()">
+                ⚖️ Customize Weights
+            </button>
             <div class="view-info" id="viewInfo">
                 Viewing 15 parent categories (aggregated)
             </div>
-            <div style="text-align: center;">
-                <button class="weights-button" onclick="toggleWeightsDrawer()">
-                    ⚖️ Customize Weights
-                </button>
-            </div>
+          
         </div>
 
         <div class="weights-drawer" id="weightsDrawer">

@@ -22,24 +22,31 @@
         }
 
         .header {
-            padding: 20px;
+            padding: 15px 20px;
             background: #2c3e50;
             color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 15px;
         }
+        
 
         h1 {
             text-align: center;
             margin-bottom: 15px;
         }
-
+        .header > div {
+            box-shadow: 2px .5ex 1ex rgba(0,0,0,0.3);
+        }
         .controls {
             display: flex;
-            justify-content: center;
             align-items: center;
-            gap: 15px;
-            flex-wrap: wrap;
-            margin-bottom: 10px;
+            gap: 10px;
+            flex-shrink: 0; padding: 1ex 1em; outline: 1px solid rgba(255,255,255,0.3); background-color: rgba(0,0,0,0.3); border-radius: 4px;
         }
+        .view-info {outline: 1px solid rgba(255,255,255,0.3); max-width: 25em; padding: 1em; border-radius: 4px;}
 
         .toggle-switch {
             position: relative;
@@ -92,9 +99,11 @@
         }
 
         .view-info {
-            font-size: 14px;
-            opacity: 0.9;
+            font-size: 13px;
+            opacity: 0.85;
+            flex: 1;
             text-align: center;
+            min-width: 200px;
         }
 
         .weights-button {
