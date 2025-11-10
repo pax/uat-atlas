@@ -13,19 +13,21 @@ Ranks cities based on venue / services counts and other attributs (ex: non stop 
 ## Roadmap
 - [x] MPV UI
     - [x] figure out stack
-    - [x] read data from db/api?
+    - [x] read data from db/api [Goolge Maps Places Aggregate API](https://developers.google.com/maps/documentation/places-aggregate/overview)
     - [x] how to calculate scores?-
     - [x] norm to population
 - [x] split categories by parent categories / grouping
 - [x] weighted scores
 - [ ] icons for categories
 
+### Later
+
 - [ ] add INS + OSM data
 - [ ] multi lang
 - [ ] text to sql - hugginface trained model
 - [ ] Reddit threads - vreau să mă mut în <City>
 
-see [reference/brainstorming/]
+see [brainstorming](reference/brainstorming/)
 
 ## Views
 
