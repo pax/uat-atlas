@@ -2,7 +2,17 @@
   "permissions": {
     "allow": [
       "Bash(sqlite3:*)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Bash(python selected-wikidata.py:*)",
+      "Bash(/Users/pax/devbox/envs/240826/bin/python:*)",
+      "Bash(timeout 3 /Users/pax/devbox/envs/240826/bin/python:*)",
+      "Bash(gtimeout:*)",
+      "Bash(/Users/pax/devbox/envs/240826/bin/pip:*)",
+      "Bash(sqlite3:*)",
+      "Bash(php -l:*)",
+      "Bash(php api-raw.php:*)",
+      "Bash(curl:*)",
+      "Bash(lsof:*)"
     ],
     "deny": [],
     "ask": []

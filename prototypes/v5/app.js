@@ -6,6 +6,7 @@ let currentView = 'parent';
 let weights = {};
 let drawerOpen = false;
 let categoryMetadata = {};
+let displayMode = 'score'; // 'score' or 'absolute'
 
 // Preset profiles for parent categories
 const presetsParent = {
@@ -144,6 +145,21 @@ function toggleView() {
     loadData();
 }
 
+function toggleDisplayMode() {
+    const toggle = document.getElementById('displayModeToggle');
+    displayMode = toggle.checked ? 'absolute' : 'score';
+    // Re-sort with the current column to update order based on new display mode
+    if (sortColumn) {
+        const currentColumn = sortColumn;
+        const currentDirection = sortDirection;
+        sortColumn = null; // Reset to force re-sort
+        sortDirection = currentDirection;
+        sortData(currentColumn);
+    } else {
+        renderTable();
+    }
+}
+
 function toggleWeightsDrawer() {
     drawerOpen = !drawerOpen;
     const drawer = document.getElementById('weightsDrawer');
@@ -252,19 +268,26 @@ function calculateWeightedScores() {
     currentData.cities.forEach(city => {
         let totalWeightedScore = 0;
         let totalWeight = 0;
+        let totalAbsolute = 0;
 
         currentData.categories.forEach(category => {
             const score = city.scores[category];
+            const count = city.counts ? city.counts[category] : null;
             const weight = weights[category] || 1;
 
             if (score !== null && score !== undefined) {
                 totalWeightedScore += score * weight;
                 totalWeight += weight;
             }
+
+            if (count !== null && count !== undefined) {
+                totalAbsolute += count * weight;
+            }
         });
 
         city.weighted_score = totalWeight > 0 ?
             Math.round((totalWeightedScore / totalWeight) * 100) / 100 : null;
+        city.absolute_sum = totalAbsolute;
     });
 }
 
@@ -328,11 +351,23 @@ function sortData(column) {
             valA = a.average_score !== null ? a.average_score : -1;
             valB = b.average_score !== null ? b.average_score : -1;
         } else if (column === 'weighted') {
-            valA = a.weighted_score !== null ? a.weighted_score : -1;
-            valB = b.weighted_score !== null ? b.weighted_score : -1;
+            // Sort by sum in absolute mode, weighted score in score mode
+            if (displayMode === 'absolute') {
+                valA = a.absolute_sum !== null ? a.absolute_sum : -1;
+                valB = b.absolute_sum !== null ? b.absolute_sum : -1;
+            } else {
+                valA = a.weighted_score !== null ? a.weighted_score : -1;
+                valB = b.weighted_score !== null ? b.weighted_score : -1;
+            }
         } else {
-            valA = a.scores[column] !== null ? a.scores[column] : -1;
-            valB = b.scores[column] !== null ? b.scores[column] : -1;
+            // Sort by count in absolute mode, score in score mode
+            if (displayMode === 'absolute') {
+                valA = a.counts && a.counts[column] !== null ? a.counts[column] : -1;
+                valB = b.counts && b.counts[column] !== null ? b.counts[column] : -1;
+            } else {
+                valA = a.scores[column] !== null ? a.scores[column] : -1;
+                valB = b.scores[column] !== null ? b.scores[column] : -1;
+            }
         }
 
         // Sort logic: for desc, higher values come first (return 1 if a < b)
@@ -361,8 +396,9 @@ function renderTable() {
     html += '<thead><tr>';
     html += `<th class="city-column sortable ${sortColumn === 'city' ? 'sort-' + sortDirection : ''}"
                         onclick="sortData('city')">City</th>`;
+    const weightedLabel = displayMode === 'absolute' ? 'Sum' : 'Weighted';
     html += `<th class="weighted-column score-cell sortable ${sortColumn === 'weighted' ? 'sort-' + sortDirection : ''}"
-                        onclick="sortData('weighted')">Weighted</th>`;
+                        onclick="sortData('weighted')">${weightedLabel}</th>`;
     html += `<th class="average-column score-cell sortable ${sortColumn === 'average' ? 'sort-' + sortDirection : ''}"
                         onclick="sortData('average')">Average</th>`;
     categories.forEach(category => {
@@ -393,13 +429,16 @@ function renderTable() {
                     <span class="population">${formatPopulation(city.population)} people</span>
                 </td>`;
 
-        // Weighted score column
+        // Weighted score column (or Sum in absolute mode)
         const weightedScore = city.weighted_score;
         const weightedClass = getScoreClass(weightedScore);
         const isWeightedActive = sortColumn === 'weighted';
+        const weightedDisplay = displayMode === 'absolute' ?
+            (city.absolute_sum !== null ? city.absolute_sum.toLocaleString() : 'N/A') :
+            formatScore(weightedScore);
         html += `<td class="weighted-column score-cell ${isWeightedActive ? 'active-sort-column' : ''}">
                     <div class="score-bar ${weightedClass}">
-                        ${formatScore(weightedScore)}
+                        ${weightedDisplay}
                     </div>
                 </td>`;
 
@@ -427,9 +466,13 @@ function renderTable() {
             }
 
             const isActiveColumn = category === sortColumn;
+            const displayValue = displayMode === 'absolute' ?
+                (count !== null ? count.toLocaleString() : 'N/A') :
+                formatScore(score);
+
             html += `<td class="score-cell ${isActiveColumn ? 'active-sort-column' : ''}"${tooltipAttr}>
                         <div class="score-bar ${scoreClass}">
-                            ${formatScore(score)}
+                            ${displayValue}
                         </div>
                     </td>`;
         });
